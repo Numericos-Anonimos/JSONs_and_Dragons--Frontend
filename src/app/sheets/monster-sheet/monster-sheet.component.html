@@ -1,0 +1,53 @@
+<div class="monster frame" [class.wide]="isWide" [class.maxWidth]="!isWide">
+  <h2>{{ monster.name }}</h2>
+  <p><em>{{ monster.size }} {{ monster.type }}, {{ monster.alignment }}</em></p>
+
+  <hr />
+
+  <p>
+    <strong>Armor Class:</strong> {{ monster.armorClass }} |
+    <strong>Hit Points:</strong> {{ monster.hitPoints.current }} <span *ngIf="monster.hitPoints.formula">({{ monster.hitPoints.formula }})</span> |
+    <strong>Speed:</strong> {{ monster.speed }}
+  </p>
+
+  <hr />
+
+  <table>
+    <thead>
+      <tr>
+        <th>STR</th>
+        <th>DEX</th>
+        <th>CON</th>
+        <th>INT</th>
+        <th>WIS</th>
+        <th>CHA</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>{{ monster.abilities.STR }} (-4)</td>
+        <td>{{ monster.abilities.DEX }} (+2)</td>
+        <td>{{ monster.abilities.CON }} (+4)</td>
+        <td>{{ monster.abilities.INT }} (-2)</td>
+        <td>{{ monster.abilities.WIS }} (+6)</td>
+        <td>{{ monster.abilities.CHA }} (+0)</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <hr />
+
+  <p *ngIf="monster.conditionImmunities?.length" style="margin: 0px;"><strong>Condition Immunities:</strong> {{ monster.conditionImmunities?.join(', ') }}</p>
+  <p *ngIf="monster.senses?.length" style="margin: 0px;"><strong>Senses:</strong> {{ monster.senses?.join(', ') }}</p>
+  <p *ngIf="monster.languages?.length" style="margin: 0px;"><strong>Languages:</strong> {{ monster.languages?.join(', ') }}</p>
+  <p *ngIf="monster.challenge" style="margin: 0px;"><strong>Challenge:</strong> {{ monster.challenge }} <span *ngIf="monster.proficiencyBonus">({{ monster.proficiencyBonus }} PB)</span></p>
+<hr />
+  <div *ngIf="monster.traits?.length">
+    <p *ngFor="let t of monster.traits"><strong><em>{{ t.name }}.</em></strong> {{ t.description }}</p>
+  </div>
+
+  <div *ngIf="monster.actions?.length">
+    <h3>Actions</h3>
+    <p *ngFor="let a of monster.actions"><strong><em>{{ a.name }}.</em></strong> {{ a.description }}</p>
+  </div>
+</div>

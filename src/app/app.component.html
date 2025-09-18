@@ -1,19 +1,21 @@
-<div class="page">
-  <app-character-sheet
-    [character]="myCharacter"
-    [isWide]="true">
-  </app-character-sheet>
+<div class="phb">
+  <div class="page">
+    <app-character-sheet
+      [character]="myCharacter"
+      [isWide]="true">
+    </app-character-sheet>
 
-  <app-monster-sheet
-    [monster]="myMonster"
-    [isWide]="true">
-  </app-monster-sheet>
+    <app-monster-sheet
+      [monster]="myMonster"
+      [isWide]="true">
+    </app-monster-sheet>
 
-  <app-notification
-    [notificationBody]="'Texto da notificação'"
-    [notificationTitle]="'Título da notificação'"
-    [notificationType]="1">
-  </app-notification>
+    <app-notification
+      [notificationBody]="'Texto da notificação'"
+      [notificationTitle]="'Título da notificação'"
+      [notificationType]="1">
+    </app-notification>
+  </div>
 </div>
 
 

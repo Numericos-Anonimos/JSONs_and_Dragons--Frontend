@@ -29,8 +29,8 @@
               "src/assets"
             ],
             "styles": [
-              "src/styles.less",
-              "src/assets/themes/V3/5ePHB/style.less"
+              "src/assets/themes/V3/5ePHB/style.less",
+              "src/styles.less"
             ],
             "scripts": []
           },

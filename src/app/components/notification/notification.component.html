@@ -1,0 +1,7 @@
+  <div class="note"
+  [class.success]="notificationType == 0"
+  [class.neutral]="notificationType == 1"
+  [class.warning]="notificationType == 2">
+    <h5>{{notificationTitle}}</h5>
+    <p>{{notificationBody}}</p>
+  </div>

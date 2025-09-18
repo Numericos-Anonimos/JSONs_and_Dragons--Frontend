@@ -1,14 +1,15 @@
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { CharacterSheetComponent } from "./sheets/character-sheet/character-sheet.component";
-import { MonsterSheetComponent } from "./sheets/monster-sheet/monster-sheet.component";
-import { Monster } from './sheets/monster-sheet/monster-sheet.component';
-import { Character } from './sheets/character-sheet/character-sheet.component';
+import { CharacterSheetComponent } from './components/sheets/character-sheet/character-sheet.component';
+import { MonsterSheetComponent } from './components/sheets/monster-sheet/monster-sheet.component';
+import { Monster } from './components/sheets/monster-sheet/monster-sheet.component';
+import { Character } from './components/sheets/character-sheet/character-sheet.component';
+import { NotificationComponent } from "./components/notification/notification.component";
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, CommonModule, CharacterSheetComponent, MonsterSheetComponent],
+  imports: [RouterOutlet, CommonModule, CharacterSheetComponent, MonsterSheetComponent, NotificationComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.less'
 })

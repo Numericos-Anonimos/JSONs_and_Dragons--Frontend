@@ -1,0 +1,108 @@
+/* Garante que a tela ocupe 100% da altura */
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+/* Background + alinhamento vertical corrigido */
+.login-container {
+  min-height: 100vh;
+  width: 100%;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;  // garante centralização total
+  padding: 20px;
+}
+
+/* Card */
+.card {
+  border-radius: 15px;
+  animation: fadeInUp 0.5s ease-out;
+}
+
+/* Animação */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Logo redondo */
+.logo-circle {
+  width: 80px;
+  height: 80px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 40px;
+  color: white;
+}
+
+/* Input-group */
+.input-group-text {
+  background-color: #f8f9fa;
+  border-right: none;
+}
+
+/* Mantém borda contínua entre input + botão */
+.form-control {
+  border-left: none;
+  box-shadow: none !important;
+}
+
+.form-control:focus {
+  border-color: #667eea;
+  box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+}
+
+/* Botão mostrar/ocultar senha */
+.btn-outline-secondary {
+  border-left: none !important;
+}
+
+/* Botão principal */
+.btn-primary {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border: none;
+  font-weight: 600;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+}
+
+/* Links */
+a {
+  color: #667eea;
+  cursor: pointer;
+}
+
+a:hover {
+  color: #764ba2;
+}
+
+/* Alertas */
+.alert {
+  font-size: 0.9rem;
+  padding: 0.75rem 1rem;
+}
+
+.white-text {
+  color: white;
+}
+
+.masked {
+  -webkit-text-security: disc;
+  text-security: disc;
+}

@@ -1,31 +1,162 @@
-h5 {
-  margin: 0;
-  display: inline;
+// h5 {
+//   margin: 0;
+//   display: inline;
+// }
+
+// .success {
+//   background-color: #E0E5C1;
+// }
+
+// .neutral {
+//   background-color: #faf7ea;
+// }
+
+// .warning {
+//   background-color: #9C2B1B;
+// }
+
+
+// :root {
+// 	//Colors
+// 	--HB_Color_Background            : #EEE5CE; // Light parchment
+// 	--HB_Color_Accent                : #E0E5C1; // Pastel green
+// 	--HB_Color_HeaderUnderline       : #C0AD6A; // Gold
+// 	--HB_Color_HorizontalRule        : #9C2B1B; // Maroon
+// 	--HB_Color_HeaderText            : #58180D; // Dark Maroon
+// 	--HB_Color_MonsterStatBackground : #F2E5B5; // Light orange parchment
+// 	--HB_Color_CaptionText           : #766649; // Brown
+// 	--HB_Color_WatercolorStain       : #BBAD82; // Light brown
+// 	--HB_Color_Footnotes             : #C9AD6A; // Gold
+// 	--TOC                            : 'include';
+// }
+
+/* character-creator.component.css */
+
+.card {
+  transition: all 0.3s ease;
 }
 
-.success {
-  background-color: #E0E5C1;
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
 }
 
-.neutral {
-  background-color: #faf7ea;
+.card[style*="cursor: pointer"]:hover {
+  box-shadow: 0 6px 16px rgba(0,0,0,0.2);
 }
 
-.warning {
-  background-color: #9C2B1B;
+.card.border-primary {
+  border-width: 3px !important;
+  box-shadow: 0 4px 12px rgba(13, 110, 253, 0.3);
 }
 
+.card.border-primary:hover {
+  box-shadow: 0 6px 16px rgba(13, 110, 253, 0.4);
+}
 
-:root {
-	//Colors
-	--HB_Color_Background            : #EEE5CE; // Light parchment
-	--HB_Color_Accent                : #E0E5C1; // Pastel green
-	--HB_Color_HeaderUnderline       : #C0AD6A; // Gold
-	--HB_Color_HorizontalRule        : #9C2B1B; // Maroon
-	--HB_Color_HeaderText            : #58180D; // Dark Maroon
-	--HB_Color_MonsterStatBackground : #F2E5B5; // Light orange parchment
-	--HB_Color_CaptionText           : #766649; // Brown
-	--HB_Color_WatercolorStain       : #BBAD82; // Light brown
-	--HB_Color_Footnotes             : #C9AD6A; // Gold
-	--TOC                            : 'include';
+.progress {
+  border-radius: 15px;
+  overflow: hidden;
+}
+
+.progress-bar {
+  font-weight: bold;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: width 0.6s ease;
+}
+
+.btn {
+  transition: all 0.2s ease;
+}
+
+.btn:hover:not(:disabled) {
+  transform: scale(1.05);
+}
+
+.btn:disabled {
+  cursor: not-allowed;
+}
+
+h3.card-title {
+  color: #2c3e50;
+  font-weight: bold;
+  border-bottom: 2px solid #3498db;
+  padding-bottom: 10px;
+}
+
+.badge {
+  font-size: 0.85em;
+  padding: 0.35em 0.65em;
+  font-weight: 500;
+}
+
+.alert {
+  border-radius: 10px;
+}
+
+.alert-success {
+  background-color: #d1e7dd;
+  border-color: #badbcc;
+  color: #0f5132;
+}
+
+.card-text {
+  line-height: 1.4;
+}
+
+/* Smooth animations for step transitions */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.card-body {
+  animation: fadeIn 0.3s ease;
+}
+
+/* Badge color variations */
+.badge.bg-secondary {
+  background-color: #6c757d !important;
+}
+
+.badge.bg-info {
+  background-color: #0dcaf0 !important;
+}
+
+.badge.bg-success {
+  background-color: #198754 !important;
+}
+
+.badge.bg-warning {
+  background-color: #ffc107 !important;
+}
+
+/* Hover effects for interactive cards */
+.card[style*="cursor: pointer"] {
+  position: relative;
+  overflow: hidden;
+}
+
+.card[style*="cursor: pointer"]::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+  transition: left 0.5s;
+}
+
+.card[style*="cursor: pointer"]:hover::before {
+  left: 100%;
 }

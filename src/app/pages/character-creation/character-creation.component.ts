@@ -14,6 +14,8 @@ import { BaseDataService } from '../../shared/services/base-data-service';
 import { Choice } from '../../shared/models/choice.model';
 import { HttpClient } from "@angular/common/http";
 import { ActivatedRoute } from '@angular/router';
+import { CriarFichaRequest } from '../../shared/models/criar-ficha-request.model';
+import { Atributos } from '../../shared/models/atributos.model';
 
 @Component({
   selector: 'app-character-creation',
@@ -338,6 +340,9 @@ export class CharacterCreationComponent {
       if (this.step == 1) {
         this.getRaces();
       }
+      if (this.step == 2) {
+        this.saveCharacter();
+      }
       if (this.step === 3 && this.selectedSubrace) {
         this.applyRacialBonuses();
         this.getClasses();
@@ -635,6 +640,25 @@ export class CharacterCreationComponent {
 
   getActiveChoicesArray(): number[] {
     return Array.from(this.activeChoices).sort((a, b) => a - b);
+  }
+
+  saveCharacter() {
+    const ficha: CriarFichaRequest = {
+      nome: this.character.name,
+      atributos: {
+          forca: this.character.attributes.STR,
+          destreza: this.character.attributes.DEX,
+          constituicao: this.character.attributes.CON,
+          inteligencia: this.character.attributes.INT,
+          sabedoria: this.character.attributes.WIS,
+          carisma: this.character.attributes.CHA
+      }
+    }
+    this.characterCreationService.createCharacter(ficha)
+    .pipe(takeUntilDestroyed(this.destroyRef))
+    .subscribe(response => {
+      console.log('enviou');
+    });
   }
 
 }

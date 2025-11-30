@@ -3,20 +3,7 @@ import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { Observable } from "rxjs";
 import { environment } from "../../environments/environment";
 import { AuthService } from "./auth-service";
-
-export interface Atributos {
-  forca: number;
-  destreza: number;
-  constituicao: number;
-  inteligencia: number;
-  sabedoria: number;
-  carisma: number;
-}
-
-export interface CriarFichaRequest {
-  nome: string;
-  atributos: Atributos;
-}
+import { CriarFichaRequest } from "../models/criar-ficha-request.model";
 
 @Injectable({ providedIn: 'root' })
 export class CharacterCreationService {

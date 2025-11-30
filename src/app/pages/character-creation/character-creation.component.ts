@@ -1,7 +1,6 @@
 import { Component, Input, DestroyRef, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Character } from '../../shared/components/sheets/character-sheet/character-sheet.component';
-import { Skills } from '../../shared/components/sheets/character-sheet/character-sheet.component';
 import { SavingThrows } from '../../shared/components/sheets/character-sheet/character-sheet.component';
 import { Attributes } from '../../shared/components/sheets/character-sheet/character-sheet.component';
 import { Monster } from '../../shared/components/sheets/monster-sheet/monster-sheet.component';
@@ -14,6 +13,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { BaseDataService } from '../../shared/services/base-data-service';
 import { Choice } from '../../shared/models/choice.model';
 import { HttpClient } from "@angular/common/http";
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-character-creation',
@@ -24,6 +24,7 @@ import { HttpClient } from "@angular/common/http";
 export class CharacterCreationComponent {
 
   constructor(
+    private route: ActivatedRoute,
     private characterCreationService: CharacterCreationService,
     private baseDataService: BaseDataService,
     private http: HttpClient
@@ -38,7 +39,7 @@ export class CharacterCreationComponent {
   loading: { [key: number]: boolean } = {};
 
   step: number = 1;
-  totalSteps: number = 9;
+  totalSteps: number = 8;
   pointBuyPoints: number = 27;
   selectedSubrace: string = '';
 
@@ -60,10 +61,18 @@ export class CharacterCreationComponent {
   ];
 
   ngOnInit() {
+    // this.route.paramMap.subscribe(params => {
+    //   const id = params.get('id');
+
+    //   if (id) {
+    //     this.loadCharacterById(id);
+    //   }
+    // });
   }
 
   initializeCharacter(): Character {
     return {
+      id: '',
       name: '',
       race: '',
       class: '',
@@ -88,25 +97,7 @@ export class CharacterCreationComponent {
         WIS: false,
         CHA: false
       },
-      skills: {
-        Acrobatics: false,
-        Arcana: false,
-        Athletics: false,
-        Deception: false,
-        History: false,
-        Insight: false,
-        Intimidation: false,
-        Investigation: false,
-        Medicine: false,
-        Nature: false,
-        Perception: false,
-        Performance: false,
-        Persuasion: false,
-        Religion: false,
-        SleightOfHand: false,
-        Stealth: false,
-        Survival: false
-      },
+      skills: [],
       armorClass: 10,
       initiative: 0,
       speed: '30 ft',
@@ -123,6 +114,40 @@ export class CharacterCreationComponent {
       notes: ''
     };
   }
+
+  // loadCharacterById(id: string) {
+  //   this.characterCreationService.getCharacter(id)
+  //     .pipe(takeUntilDestroyed(this.destroyRef))
+  //     .subscribe({
+  //       next: (character) => {
+  //         this.character = character;
+
+  //         // any derived fields you always recalc:
+  //         this.updateDerivedStats();
+
+  //         // now update feats
+  //         this.updateCharacterFeats();
+  //       },
+  //       error: (err) => {
+  //         console.error(`Failed to load character ${id}`, err);
+  //       }
+  //     });
+  // }
+
+  // updateCharacterFeats() {
+  //   if (!this.character.class || !this.character.subclass || !this.character.level) return;
+
+  //   this.characterCreationService.getFeatsForCharacter(
+  //     this.character.class,
+  //     this.character.subclass,
+  //     this.character.level
+  //   )
+  //   .pipe(takeUntilDestroyed(this.destroyRef))
+  //   .subscribe(feats => {
+  //     this.character.features = feats;
+  //   });
+  // }
+
 
   getRaces() {
     this.baseDataService.getRaces()
@@ -283,7 +308,7 @@ export class CharacterCreationComponent {
     
     // Reset skills
     Object.keys(this.character.skills).forEach(skill => {
-      this.character.skills[skill as keyof Skills] = false;
+      this.character.skills = [];
     });
     
     // Set saving throws
@@ -303,14 +328,14 @@ export class CharacterCreationComponent {
       if (this.step == 1) {
         this.getRaces();
       }
-      if (this.step === 2 && this.selectedSubrace) {
+      if (this.step === 3 && this.selectedSubrace) {
         this.applyRacialBonuses();
         this.getClasses();
       }
-      if (this.step === 3 && this.character.class) {
+      if (this.step === 4 && this.character.class) {
         this.getClassChoices();
       } 
-      if (this.step === 5) {
+      if (this.step === 6) {
         this.updateDerivedStats();
       }
       this.step++;
@@ -326,10 +351,10 @@ export class CharacterCreationComponent {
   canProceed(): boolean {
     switch (this.step) {
       case 1: return this.character.name.trim().length > 0;
-      case 2: return this.character.race.length > 0 && this.selectedSubrace.length > 0;
-      case 3: return this.character.class.length > 0 && this.character.subclass.length > 0;
-      // case 4: return this.getSelectedSkillsCount() === this.getSkillCount();
-      case 5: return this.calculateUsedPoints() === this.pointBuyPoints;
+      case 2: return this.calculateUsedPoints() === this.pointBuyPoints;
+      case 3: return this.character.race.length > 0 && this.selectedSubrace.length > 0;
+      case 4: return this.character.class.length > 0 && this.character.subclass.length > 0;
+      // case 5: return this.getSelectedSkillsCount() === this.getSkillCount();
       case 6: return this.character.background !== undefined && this.character.background.length > 0;
       case 7: return this.character.alignment !== undefined && this.character.alignment.length > 0;
       case 8: return true;
@@ -427,8 +452,8 @@ export class CharacterCreationComponent {
     return ['STR', 'DEX', 'CON', 'INT', 'WIS', 'CHA'];
   }
 
-  getSkillKeys(): (keyof Skills)[] {
-    return Object.keys(this.character.skills) as (keyof Skills)[];
+  getSkillKeys(): string[] {
+    return this.character.skills;
   }
 
   setRace(race: any) {

@@ -1,69 +1,83 @@
 <div class="monster frame" [class.wide]="isWide">
-  <h2>{{character.name}} - Level {{character.level}} {{character.race}} {{character.class}}</h2>
-  <p><strong>Background:</strong> {{character.background}} | <strong>Alignment:</strong> {{character.alignment}} | <strong>XP:</strong> {{character.experience}}</p>
+  <h2>{{character.name}} - Nível {{character.level}} {{character.race}} {{character.class}}</h2>
+  <p>
+    <strong>Antecedente:</strong> {{character.background}} |
+    <strong>Tendência:</strong> {{character.alignment}} |
+    <strong>XP:</strong> {{character.experience}}
+  </p>
 
   <hr />
   <table>
     <thead>
-    <tr>
-      <th>STR</th><th>DEX</th><th>CON</th><th>INT</th><th>WIS</th><th>CHA</th>
-    </tr>
+      <tr>
+        <th>FOR</th><th>DES</th><th>CON</th><th>INT</th><th>SAB</th><th>CAR</th>
+      </tr>
     </thead>
     <tbody>
-    <tr>
-      <td>{{character.attributes.STR}} (+4)</td>
-      <td>{{character.attributes.DEX}} (+2)</td>
-      <td>{{character.attributes.CON}} (-4)</td>
-      <td>{{character.attributes.INT}} (+0)</td>
-      <td>{{character.attributes.WIS}} (-2)</td>
-      <td>{{character.attributes.CHA}} (+4)</td>
-    </tr>
+      <tr>
+        <td>{{character.attributes.STR}} (+4)</td>
+        <td>{{character.attributes.DEX}} (+2)</td>
+        <td>{{character.attributes.CON}} (-4)</td>
+        <td>{{character.attributes.INT}} (+0)</td>
+        <td>{{character.attributes.WIS}} (-2)</td>
+        <td>{{character.attributes.CHA}} (+4)</td>
+      </tr>
     </tbody>
   </table>
 
-  <h3>Saving Throws</h3>
+  <h3>Testes de Resistência</h3>
   <p>
-    STR: {{character.savingThrows.STR ? '✔' : '✖'}},
-    DEX: {{character.savingThrows.DEX ? '✔' : '✖'}},
+    {{character.savingThrows.STR ? 'FOR: ✔' : '✖'}},
+    DES: {{character.savingThrows.DEX ? '✔' : '✖'}},
     CON: {{character.savingThrows.CON ? '✔' : '✖'}},
     INT: {{character.savingThrows.INT ? '✔' : '✖'}},
-    WIS: {{character.savingThrows.WIS ? '✔' : '✖'}},
-    CHA: {{character.savingThrows.CHA ? '✔' : '✖'}}
+    SAB: {{character.savingThrows.WIS ? '✔' : '✖'}},
+    CAR: {{character.savingThrows.CHA ? '✔' : '✖'}}
   </p>
 
-  <h3>Skills</h3>
+  <h3>Perícias</h3>
   <ul>
-    <li *ngFor="let skill of (character.skills | keyvalue)">
-      {{skill.value ? '✔' : '✖'}} {{skill.key}}
+    <li *ngFor="let skill of (character.skills)">
+      {{'✔ ' + skill}}
     </li>
   </ul>
 
-  <h3>Combat</h3>
-  <p><strong>Armor Class:</strong> {{character.armorClass}} | <strong>Initiative:</strong> {{character.initiative}} | <strong>Speed:</strong> {{character.speed}}</p>
-  <p><strong>Hit Points:</strong> {{character.hitPoints.current}} / {{character.hitPoints.max}} (+{{character.hitPoints.temporary}} temp)</p>
-  <p><strong>Hit Dice:</strong> {{character.hitDice}}</p>
+  <h3>Combate</h3>
+  <p>
+    <strong>Classe de Armadura:</strong> {{character.armorClass}} |
+    <strong>Iniciativa:</strong> {{character.initiative}} |
+    <strong>Deslocamento:</strong> {{character.speed}}
+  </p>
+  <p>
+    <strong>Pontos de Vida:</strong> {{character.hitPoints.current}} / {{character.hitPoints.max}}
+    (+{{character.hitPoints.temporary}} temporários)
+  </p>
+  <p><strong>Dado de Vida:</strong> {{character.hitDice}}</p>
   
-  <h3>Attacks</h3>
+  <h3>Ataques</h3>
   <ul>
-    <li *ngFor="let attack of character.attacks"><strong><em>{{attack.name}}:</em></strong> {{attack.bonus}} to hit, Damage: {{attack.damage}}</li>
+    <li *ngFor="let attack of character.attacks">
+      <strong><em>{{attack.name}}:</em></strong> {{attack.bonus}} para atingir,
+      Dano: {{attack.damage}}
+    </li>
   </ul>
 
-  <h3>Equipment</h3>
+  <h3>Equipamento</h3>
   <ul>
     <li *ngFor="let item of character.equipment">{{item}}</li>
   </ul>
 
-  <h3>Features & Traits</h3>
+  <h3>Características & Traços</h3>
   <ul>
     <li *ngFor="let feature of character.features">{{feature}}</li>
   </ul>
 
-  <h3>Spells</h3>
+  <h3>Magias</h3>
   <ul>
     <li *ngFor="let spell of character.spells">{{spell}}</li>
-    <li *ngIf="character.spells.length === 0">No spells available</li>
+    <li *ngIf="character.spells.length === 0">Nenhuma magia disponível</li>
   </ul>
 
-  <h3>Notes</h3>
+  <h3>Anotações</h3>
   <p>{{character.notes}}</p>
 </div>

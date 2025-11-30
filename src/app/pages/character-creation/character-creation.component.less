@@ -183,3 +183,204 @@ h3.card-title {
   font-size: 0.75rem;
   padding: 0.5em 0.75em;
 }
+
+.hidden {
+  display: none;
+}
+
+//extra
+
+/* ============================
+   GLOBAL PAGE WRAPPER
+   ============================ */
+
+.container {
+  max-width: 1100px;
+}
+
+
+/* ============================
+   PROGRESS BAR
+   ============================ */
+
+.progress {
+  background: #e9dcb8;
+  border-radius: 15px;
+  overflow: hidden;
+  border: 2px solid #c2a878;
+}
+
+.progress-bar {
+  font-weight: bold;
+  font-size: 1.1rem;
+  background: linear-gradient(90deg, #3a8d47, #6bcf7a);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* ============================
+   CARD BASE STYLE
+   ============================ */
+
+.card {
+  border-radius: 14px;
+  border: 1px solid #d8c9a6;
+  background: #fbf7ef;
+  transition: 0.2s ease;
+}
+
+.card.shadow-lg {
+  border: 2px solid #c7b89a;
+}
+
+.card:hover {
+  transform: scale(1.01);
+}
+
+/* ============================
+   CARD TITLES
+   ============================ */
+
+.card-title {
+  font-size: 1.6rem;
+  color: #4b2e0f;
+}
+
+/* ============================
+   BUTTONS
+   ============================ */
+
+.btn-outline-success {
+  border-width: 2px;
+}
+
+.btn-outline-danger {
+  border-width: 2px;
+}
+
+.btn-warning,
+.btn-outline-secondary {
+  font-size: 1rem;
+  border-radius: 12px;
+  transition: 0.15s ease;
+}
+
+.btn-warning:hover {
+  opacity: 0.9;
+}
+
+/* ============================
+   SELECTABLE CARDS (RACE, CLASS, ETC)
+   ============================ */
+
+.card.selectable {
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: 0.25s ease-in-out;
+}
+
+.card.selectable:hover {
+  border-color: #b08c48;
+  background: #fffdf8;
+  box-shadow: 0 0 12px rgba(176, 140, 72, 0.4);
+}
+
+.card.selectable.selected {
+  border-color: #b08c48 !important;
+  background: #fffaf0 !important;
+  box-shadow: 0 0 15px rgba(176, 140, 72, 0.55);
+}
+
+/* ============================
+   ABILITY SCORE CARDS
+   ============================ */
+
+.card .h2 {
+  font-weight: bold;
+  color: #3c2f22;
+}
+
+.badge.bg-info {
+  background-color: #4d88a8 !important;
+}
+
+/* ============================
+   CHOICE CARDS
+   ============================ */
+
+.card.choice-card {
+  border-radius: 16px;
+  border-width: 2px;
+}
+
+.card.choice-card.active {
+  border-color: #d9a441;
+  background: #fffaf4;
+}
+
+.card.choice-card.inactive {
+  opacity: 0.5;
+}
+
+.card.choice-card .card-header {
+  border-bottom: none;
+  font-size: 1.2rem;
+}
+
+.btn.option-btn {
+  border-radius: 12px;
+  text-align: left;
+  border-width: 2px;
+  font-weight: 500;
+}
+
+.btn.option-btn:hover {
+  transform: scale(1.03);
+}
+
+/* ============================
+   REVIEW PANEL
+   ============================ */
+
+
+.card-header.bg-primary,
+.card-header.bg-success,
+.card-header.bg-info {
+  opacity: 0.93;
+}
+
+/* ============================
+   LIST ITEMS
+   ============================ */
+
+.list-group-item {
+  border-radius: 10px !important;
+  margin-bottom: 6px;
+  border: 1px solid #d7c7aa;
+}
+
+/* ============================
+   INPUTS
+   ============================ */
+
+.form-control {
+  border-radius: 12px;
+  border: 2px solid #d6c6a4;
+}
+
+.form-control:focus {
+  border-color: #b08c48;
+  box-shadow: 0 0 0 0.15rem rgba(176, 140, 72, 0.25);
+}
+
+.card-footer {
+  border-radius: 0px 0px 20px 20px;
+}
+
+// .text-gradient {
+//   background: linear-gradient(135deg, #e53e3e 0%, #dd6b20 50%, #319795 100%);
+//   -webkit-background-clip: text;
+//   -webkit-text-fill-color: transparent;
+//   background-clip: text;
+// }

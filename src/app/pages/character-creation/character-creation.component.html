@@ -4,7 +4,7 @@
       
       <!-- Header -->
       <div class="text-center mb-5">
-        <h1 class="display-4 mb-3">
+        <h1 class="display-4 fw-bold mb-3 text-gradient">
           <i class="bi bi-dice-6"></i> Criar Personagem D&D
         </h1>
         <p class="lead text-muted">Crie seu aventureiro seguindo o Livro do Jogador ou suas próprias regras</p>
@@ -54,14 +54,81 @@
             </div> -->
           </div>
 
-          <!-- Step 2: Race Selection -->
+          <!-- Step 2: Ability Scores -->
           <div *ngIf="step === 2">
+            <h3 class="card-title mb-4">
+              <i class="bi bi-graph-up"></i> Atribua os Pontos de Atributo
+            </h3>
+            <p class="text-muted mb-3">
+              Sistema de Pontos - Pontos restantes: 
+              <span class="badge" [class.bg-success]="pointBuyPoints - calculateUsedPoints() === 0"
+                    [class.bg-warning]="pointBuyPoints - calculateUsedPoints() > 0">
+                {{pointBuyPoints - calculateUsedPoints()}}
+              </span>
+            </p>
+
+            <div class="row g-3">
+              <div class="col-md-6" *ngFor="let ability of getObjectKeys(character.attributes)">
+                <div class="card">
+                  <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                      <h5 class="mb-0 text-uppercase">{{ability}}</h5>
+                      <span class="badge bg-secondary">
+                        Utilizados: {{getPointCost(character.attributes[ability])}}
+                      </span>
+                    </div>
+                    
+                    <div class="d-flex align-items-center justify-content-between">
+                      <button 
+                        class="btn btn-outline-danger"
+                        (click)="decreaseAbility(ability)"
+                        [disabled]="!canDecreaseAbility(ability)">
+                        <i class="bi bi-dash"></i>
+                      </button>
+                      
+                      <div class="text-center mx-3">
+                        <div class="h2 mb-0">{{character.attributes[ability]}}</div>
+                        <small class="text-muted" *ngIf="getRaceBonus(ability) > 0">
+                          +{{getRaceBonus(ability)}} racial
+                        </small>
+                        <div>
+                          <span class="badge bg-info">
+                            Modificador: {{getAbilityModifier(character.attributes[ability]) >= 0 ? '+' : ''}}{{getAbilityModifier(character.attributes[ability])}}
+                          </span>
+                        </div>
+                      </div>
+                      
+                      <button 
+                        class="btn btn-outline-success"
+                        (click)="increaseAbility(ability)"
+                        [disabled]="!canIncreaseAbility(ability)">
+                        <i class="bi bi-plus"></i>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="alert alert-warning mt-4">
+              <i class="bi bi-info-circle"></i> <strong>Atenção:</strong> Bônus raciais serão aplicados após esta etapa.
+            </div>
+          </div>
+
+          <!-- Step 3: Race Selection -->
+          <div *ngIf="step === 3">
             <h3 class="card-title mb-4">
               <i class="bi bi-people"></i> Escolha Sua Raça
             </h3>
             
             <div class="mb-4">
               <label class="form-label">Raça</label>
+              <div *ngIf="races.length == 0" class="text-center py-4">
+                <div class="spinner-border text-primary" role="status">
+                  <span class="visually-hidden">Carregando raças...</span>
+                </div>
+                <p class="mt-2 text-muted">Carregando raças...</p>
+              </div>
               <div class="row g-3">
                 <div class="col-md-4" *ngFor="let race of races">
                   <div class="card h-100" 
@@ -79,6 +146,12 @@
 
             <div class="mb-4" *ngIf="character.race">
               <label class="form-label">Sub-raça</label>
+              <div *ngIf="subraces.length == 0" class="text-center py-4">
+                <div class="spinner-border text-primary" role="status">
+                  <span class="visually-hidden">Carregando sub-raças...</span>
+                </div>
+                <p class="mt-2 text-muted">Carregando sub-raças...</p>
+              </div>
               <div class="row g-3">
                 <div class="col-md-4" *ngFor="let subrace of subraces">
                   <div class="card h-100" 
@@ -106,12 +179,18 @@
             </div> -->
           </div>
 
-          <!-- Step 3: Class Selection -->
-          <div *ngIf="step === 3">
+          <!-- Step 4: Class Selection -->
+          <div *ngIf="step === 4">
             <h3 class="card-title mb-4">
               <i class="bi bi-shield"></i> Escolha Sua Classe
             </h3>
             <div class="row g-3">
+              <div *ngIf="classes.length == 0" class="text-center py-4">
+                <div class="spinner-border text-primary" role="status">
+                  <span class="visually-hidden">Carregando classes...</span>
+                </div>
+                <p class="mt-2 text-muted">Carregando classes...</p>
+              </div>
               <div class="col-md-4" *ngFor="let className of classes">
                 <div class="card h-100" 
                      [class.border-primary]="character.class === className"
@@ -127,6 +206,12 @@
 
             <div class="mb-4" *ngIf="character.class">
               <label class="form-label">Sub-classe</label>
+              <div *ngIf="subclasses.length == 0" class="text-center py-4">
+                <div class="spinner-border text-primary" role="status">
+                  <span class="visually-hidden">Carregando sub-classes...</span>
+                </div>
+                <p class="mt-2 text-muted">Carregando sub-classes...</p>
+              </div>
               <div class="row g-3">
                 <div class="col-md-4" *ngFor="let subclass of subclasses">
                   <div class="card h-100" 
@@ -147,7 +232,7 @@
 
           <!-- Choices -->
 
-          <div *ngIf="step === 4">
+          <div *ngIf="step === 5">
             <h3 class="card-title mb-4">
               <i class="bi bi-graph-up"></i> Escolhas de Classe
             </h3>
@@ -156,7 +241,7 @@
                 class="card"
                 [ngClass]="{
                   'border-warning shadow-sm': isChoiceActive(i),
-                  'border-secondary': !isChoiceActive(i),
+                  'border-secondary hidden': !isChoiceActive(i),
                   'opacity-50': !isChoiceActive(i)
                 }">
                 
@@ -253,67 +338,6 @@
               </div>
             </div>
 
-          </div>
-
-          <!-- Step 5: Ability Scores -->
-          <div *ngIf="step === 5">
-            <h3 class="card-title mb-4">
-              <i class="bi bi-graph-up"></i> Atribua os Pontos de Atributo
-            </h3>
-            <p class="text-muted mb-3">
-              Sistema de Pontos - Pontos restantes: 
-              <span class="badge" [class.bg-success]="pointBuyPoints - calculateUsedPoints() === 0"
-                    [class.bg-warning]="pointBuyPoints - calculateUsedPoints() > 0">
-                {{pointBuyPoints - calculateUsedPoints()}}
-              </span>
-            </p>
-
-            <div class="row g-3">
-              <div class="col-md-6" *ngFor="let ability of getObjectKeys(character.attributes)">
-                <div class="card">
-                  <div class="card-body">
-                    <div class="d-flex justify-content-between align-items-center mb-2">
-                      <h5 class="mb-0 text-uppercase">{{ability}}</h5>
-                      <span class="badge bg-secondary">
-                        Custo: {{getPointCost(character.attributes[ability])}}
-                      </span>
-                    </div>
-                    
-                    <div class="d-flex align-items-center justify-content-between">
-                      <button 
-                        class="btn btn-outline-danger"
-                        (click)="decreaseAbility(ability)"
-                        [disabled]="!canDecreaseAbility(ability)">
-                        <i class="bi bi-dash"></i>
-                      </button>
-                      
-                      <div class="text-center mx-3">
-                        <div class="h2 mb-0">{{character.attributes[ability]}}</div>
-                        <small class="text-muted" *ngIf="getRaceBonus(ability) > 0">
-                          +{{getRaceBonus(ability)}} racial
-                        </small>
-                        <div>
-                          <span class="badge bg-info">
-                            Modificador: {{getAbilityModifier(character.attributes[ability]) >= 0 ? '+' : ''}}{{getAbilityModifier(character.attributes[ability])}}
-                          </span>
-                        </div>
-                      </div>
-                      
-                      <button 
-                        class="btn btn-outline-success"
-                        (click)="increaseAbility(ability)"
-                        [disabled]="!canIncreaseAbility(ability)">
-                        <i class="bi bi-plus"></i>
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div class="alert alert-warning mt-4">
-              <i class="bi bi-info-circle"></i> <strong>Atenção:</strong> Bônus raciais serão aplicados após esta etapa.
-            </div>
           </div>
 
           <!-- Step 6: Background -->
@@ -482,14 +506,14 @@
                   </div>
                   <div class="card-body">
                     <div class="row">
-                      <div class="col-6" *ngFor="let skill of getSkillKeys()">
+                      <!-- <div class="col-6" *ngFor="let skill of getSkillKeys()">
                         <div class="form-check" *ngIf="character.skills[skill]">
                           <input class="form-check-input" type="checkbox" checked disabled>
                           <label class="form-check-label">
                             {{skill}}
                           </label>
                         </div>
-                      </div>
+                      </div> -->
                     </div>
                   </div>
                 </div>

@@ -1,13 +1,30 @@
 import { Injectable } from "@angular/core";
-import { HttpClient } from "@angular/common/http";
+import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { Observable } from "rxjs";
 import { environment } from "../../environments/environment";
+import { AuthService } from "./auth-service";
+
+export interface Atributos {
+  forca: number;
+  destreza: number;
+  constituicao: number;
+  inteligencia: number;
+  sabedoria: number;
+  carisma: number;
+}
+
+export interface CriarFichaRequest {
+  nome: string;
+  atributos: Atributos;
+}
 
 @Injectable({ providedIn: 'root' })
 export class CharacterCreationService {
   private baseUrl = `${environment.apiUrl}/criar`;
 
-  constructor(private http: HttpClient) {}
+  constructor(
+    private http: HttpClient,
+    private authService: AuthService) {}
 
   sendClass(classe: string, level: string): Observable<any> {
     const url = `${this.baseUrl}/ficha/classe/${classe}/${level}`;
@@ -17,6 +34,21 @@ export class CharacterCreationService {
   sendRace(race:string): Observable<any> {
     const url = `${this.baseUrl}/ficha/raca/${race}`;
     return this.http.get<any>(url);
+  }
+
+createCharacter(ficha: CriarFichaRequest): Observable<any> {
+    const url = `${this.baseUrl}/ficha/`;
+
+    const token = this.authService.getToken();
+
+    const headers = token ? new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`
+    }) : new HttpHeaders({
+      'Content-Type': 'application/json'
+    });
+
+    return this.http.post<any>(url, ficha, { headers });
   }
 
   // loadOptionsFromAPI(choiceIndex: number, query: string): void {

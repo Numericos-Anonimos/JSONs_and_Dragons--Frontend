@@ -2,6 +2,7 @@ import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 export interface Character {
+  id: string;
   name: string;
   race: string;
   class: string;
@@ -10,6 +11,7 @@ export interface Character {
   background?: string;
   alignment?: string;
   experience?: number;
+  avatar?: string;
 
   // Attributes / Ability Scores
   attributes: Attributes;
@@ -18,7 +20,7 @@ export interface Character {
   savingThrows: SavingThrows;
 
   // Skills
-  skills: Skills;
+  skills: string[];
 
   // Combat
   armorClass: number;
@@ -59,26 +61,6 @@ export interface SavingThrows {
   INT: boolean;
   WIS: boolean;
   CHA: boolean;
-}
-
-export interface Skills {
-  Acrobatics: boolean;
-  Arcana: boolean;
-  Athletics: boolean;
-  Deception: boolean;
-  History: boolean;
-  Insight: boolean;
-  Intimidation: boolean;
-  Investigation: boolean;
-  Medicine: boolean;
-  Nature: boolean;
-  Perception: boolean;
-  Performance: boolean;
-  Persuasion: boolean;
-  Religion: boolean;
-  SleightOfHand: boolean;
-  Stealth: boolean;
-  Survival: boolean;
 }
 
 export interface HitPoints {

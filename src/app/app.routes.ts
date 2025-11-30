@@ -3,6 +3,7 @@ import { LoginComponent } from './pages/login-screen/login-screen.component';
 import { CharacterCreationComponent } from './pages/character-creation/character-creation.component';
 import { AuthGuard } from './shared/guards/auth.guard';
 import { HomePageComponent } from './pages/home-page/home-page.component';
+import { ManageSheetsComponent } from './pages/manage-sheets/manage-sheets.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'login-screen', pathMatch: 'full' },
@@ -19,7 +20,12 @@ export const routes: Routes = [
     component: CharacterCreationComponent,
     canActivate: [AuthGuard]
   },
-    { 
+  { 
+    path: 'manage-sheets', 
+    component: ManageSheetsComponent,
+    canActivate: [AuthGuard]
+  },
+  { 
     path: 'home', 
     component: HomePageComponent,
     canActivate: [AuthGuard]

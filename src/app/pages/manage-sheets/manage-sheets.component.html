@@ -1,0 +1,108 @@
+<div class="page">
+  <app-character-sheet
+    [character]="hoverCharacter"
+    [isWide]="true"
+    *ngIf="onHover && hoverCharacter"
+    class="character-tooltip"
+    [ngStyle]="{
+      top: tooltipY + 'px',
+      left: tooltipX + 'px'
+    }"
+  ></app-character-sheet>
+</div>
+
+<div class="character-list-container">
+  <!-- Hero Header -->
+  <section class="list-hero-section">
+    <div class="container">
+      <div class="row align-items-center">
+        <div class="col-lg-8">
+          <h1 class="display-4 fw-bold mb-3 text-gradient">
+            Suas Fichas de Personagem
+          </h1>
+          <p class="lead mb-0">
+            Gerencie e edite todos os seus personagens em um só lugar
+          </p>
+        </div>
+        <div class="col-lg-4 text-lg-end mt-4 mt-lg-0">
+          <button 
+            class="btn btn-primary btn-lg px-4"
+            (click)="createNewCharacter()">
+            <i class="bi bi-plus-circle me-2"></i>
+            Criar Novo
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Search and Filter -->
+  <section class="search-section py-4">
+    <div class="container">
+      <div class="search-box">
+        <i class="bi bi-search search-icon"></i>
+        <input
+          type="text"
+          class="form-control search-input"
+          placeholder="Buscar por nome, classe ou raça..."
+          [(ngModel)]="searchTerm"
+          (ngModelChange)="filterCharacters()" />
+      </div>
+    </div>
+  </section>
+
+  <!-- Characters Grid -->
+  <section class="characters-section py-4">
+    <div class="container">
+      <div class="row g-4">
+        <!-- Empty State -->
+        <div class="col-12" *ngIf="filteredCharacters.length === 0">
+          <div class="empty-state">
+            <i class="bi bi-inbox empty-icon"></i>
+            <h3 class="fw-bold mb-2">Nenhum personagem encontrado</h3>
+            <p class="text-muted">Tente ajustar sua busca ou crie um novo personagem</p>
+          </div>
+        </div>
+
+        <!-- Character Cards -->
+        <div class="col-md-6 col-lg-4" *ngFor="let character of filteredCharacters">
+          <div 
+            class="character-card"
+            (click)="editCharacter(character.id)"
+            (mouseenter)="showTooltip(character)"
+            (mouseleave)="hideTooltip()">
+            <div class="character-header">
+              <div class="character-avatar">
+                <i [class]="'bi ' + character.avatar"></i>
+              </div>
+              <div class="character-level">
+                Nível {{ character.level }}
+              </div>
+            </div>
+            
+            <div class="character-body">
+              <h3 class="character-name">{{ character.name }}</h3>
+              <div class="character-info">
+                <span class="info-badge">
+                  <i class="bi bi-person-fill me-1"></i>
+                  {{ character.race }}
+                </span>
+                <span class="info-badge">
+                  <i class="bi bi-lightning-fill me-1"></i>
+                  {{ character.class }}
+                </span>
+              </div>
+            </div>
+            
+            <div class="character-footer">
+              <button class="btn-edit">
+                <i class="bi bi-pencil-square me-2"></i>
+                Editar Ficha
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>

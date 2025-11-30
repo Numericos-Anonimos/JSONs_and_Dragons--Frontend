@@ -185,6 +185,16 @@ export class CharacterCreationComponent {
     }
   }
 
+  getBackgrounds() {
+    if (this.character.class) {
+      this.baseDataService.getBackgrounds()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(response => {
+        this.backgrounds = response;
+      });
+    }
+  }
+
   loadDynamicOptions(): void {
     this.choices.forEach((choice, index) => {
       if (typeof choice.opcoes === 'object' && choice.opcoes.action === 'REQUEST') {
@@ -335,9 +345,12 @@ export class CharacterCreationComponent {
       if (this.step === 4 && this.character.class) {
         this.getClassChoices();
       } 
-      if (this.step === 6) {
-        this.updateDerivedStats();
-      }
+      if (this.step === 5 && this.character.class) {
+        this.getBackgrounds();
+      } 
+      // if (this.step === 6) {
+      //   this.updateDerivedStats();
+      // }
       this.step++;
     }
   }

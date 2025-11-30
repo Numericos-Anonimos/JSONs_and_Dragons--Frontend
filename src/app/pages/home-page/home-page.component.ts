@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-home-page',
@@ -9,6 +10,9 @@ import { CommonModule } from '@angular/common';
   styleUrl: './home-page.component.less'
 })
 export class HomePageComponent {
+
+  constructor(private router: Router) {}
+  
   features = [
     {
       icon: 'bi bi-phone',
@@ -27,4 +31,8 @@ export class HomePageComponent {
     { name: 'Lucas Molinari' },
     { name: 'Thomas Pires Correia' }
   ];
+  
+  createNewCharacter(): void {
+    this.router.navigate(['/character-creation']);
+  }
 }

@@ -38,5 +38,10 @@ export class BaseDataService {
     const url = `${this.baseUrl}/idiomas/keys`;
     return this.http.get<any>(url);
   }
+  
+  getBackgrounds(): Observable<any> {
+    const url = `${this.baseUrl}/backgrounds/keys`;
+    return this.http.get<any>(url);
+  }
 
 }

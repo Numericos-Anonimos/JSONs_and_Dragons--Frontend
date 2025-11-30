@@ -11,7 +11,7 @@
             Crie e gerencie fichas de personagens totalmente personalizáveis e desenvolva seus próprios homebrews.
           </p>
           <div class="d-flex gap-3">
-            <button class="btn btn-primary btn-lg px-4">
+            <button class="btn btn-primary btn-lg px-4" (click)="createNewCharacter()">
               <i class="bi bi-play-circle me-2"></i>Começar
             </button>
             <button class="btn btn-outline-light btn-lg px-4">
@@ -120,7 +120,7 @@
       <div class="cta-card text-center">
         <h2 class="display-6 fw-bold mb-3">Pronto para começar sua aventura?</h2>
         <p class="lead mb-4">Comece a criar fichas e homebrews agora mesmo!</p>
-        <button class="btn btn-light btn-lg px-5">
+        <button class="btn btn-light btn-lg px-5" (click)="createNewCharacter()">
           Iniciar
         </button>
       </div>

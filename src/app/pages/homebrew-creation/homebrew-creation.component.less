@@ -1,0 +1,386 @@
+// h5 {
+//   margin: 0;
+//   display: inline;
+// }
+
+// .success {
+//   background-color: #E0E5C1;
+// }
+
+// .neutral {
+//   background-color: #faf7ea;
+// }
+
+// .warning {
+//   background-color: #9C2B1B;
+// }
+
+
+// :root {
+// 	//Colors
+// 	--HB_Color_Background            : #EEE5CE; // Light parchment
+// 	--HB_Color_Accent                : #E0E5C1; // Pastel green
+// 	--HB_Color_HeaderUnderline       : #C0AD6A; // Gold
+// 	--HB_Color_HorizontalRule        : #9C2B1B; // Maroon
+// 	--HB_Color_HeaderText            : #58180D; // Dark Maroon
+// 	--HB_Color_MonsterStatBackground : #F2E5B5; // Light orange parchment
+// 	--HB_Color_CaptionText           : #766649; // Brown
+// 	--HB_Color_WatercolorStain       : #BBAD82; // Light brown
+// 	--HB_Color_Footnotes             : #C9AD6A; // Gold
+// 	--TOC                            : 'include';
+// }
+
+/* character-creator.component.css */
+
+.card {
+  transition: all 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.card[style*="cursor: pointer"]:hover {
+  box-shadow: 0 6px 16px rgba(0,0,0,0.2);
+}
+
+.card.border-primary {
+  border-width: 3px !important;
+  box-shadow: 0 4px 12px rgba(13, 110, 253, 0.3);
+}
+
+.card.border-primary:hover {
+  box-shadow: 0 6px 16px rgba(13, 110, 253, 0.4);
+}
+
+.progress {
+  border-radius: 15px;
+  overflow: hidden;
+}
+
+.progress-bar {
+  font-weight: bold;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: width 0.6s ease;
+}
+
+.btn {
+  transition: all 0.2s ease;
+}
+
+.btn:hover:not(:disabled) {
+  transform: scale(1.05);
+}
+
+.btn:disabled {
+  cursor: not-allowed;
+}
+
+h3.card-title {
+  color: #2c3e50;
+  font-weight: bold;
+  border-bottom: 2px solid #3498db;
+  padding-bottom: 10px;
+}
+
+.badge {
+  font-size: 0.85em;
+  padding: 0.35em 0.65em;
+  font-weight: 500;
+}
+
+.alert {
+  border-radius: 10px;
+}
+
+.alert-success {
+  background-color: #d1e7dd;
+  border-color: #badbcc;
+  color: #0f5132;
+}
+
+.card-text {
+  line-height: 1.4;
+}
+
+/* Smooth animations for step transitions */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.card-body {
+  animation: fadeIn 0.3s ease;
+}
+
+/* Badge color variations */
+.badge.bg-secondary {
+  background-color: #6c757d !important;
+}
+
+.badge.bg-info {
+  background-color: #0dcaf0 !important;
+}
+
+.badge.bg-success {
+  background-color: #198754 !important;
+}
+
+.badge.bg-warning {
+  background-color: #ffc107 !important;
+}
+
+/* Hover effects for interactive cards */
+.card[style*="cursor: pointer"] {
+  position: relative;
+  overflow: hidden;
+}
+
+.card[style*="cursor: pointer"]::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+  transition: left 0.5s;
+}
+
+.card[style*="cursor: pointer"]:hover::before {
+  left: 100%;
+}
+
+//options
+
+.opacity-50 {
+  opacity: 0.5;
+}
+
+.card {
+  transition: all 0.3s ease;
+}
+
+.btn {
+  transition: all 0.2s ease;
+}
+
+.btn:disabled {
+  cursor: not-allowed;
+}
+
+.badge {
+  font-size: 0.75rem;
+  padding: 0.5em 0.75em;
+}
+
+.hidden {
+  display: none;
+}
+
+//extra
+
+/* ============================
+   GLOBAL PAGE WRAPPER
+   ============================ */
+
+.container {
+  max-width: 1100px;
+}
+
+
+/* ============================
+   PROGRESS BAR
+   ============================ */
+
+.progress {
+  background: #e9dcb8;
+  border-radius: 15px;
+  overflow: hidden;
+  border: 2px solid #c2a878;
+}
+
+.progress-bar {
+  font-weight: bold;
+  font-size: 1.1rem;
+  background: linear-gradient(90deg, #3a8d47, #6bcf7a);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* ============================
+   CARD BASE STYLE
+   ============================ */
+
+.card {
+  border-radius: 14px;
+  border: 1px solid #d8c9a6;
+  background: #fbf7ef;
+  transition: 0.2s ease;
+}
+
+.card.shadow-lg {
+  border: 2px solid #c7b89a;
+}
+
+.card:hover {
+  transform: scale(1.01);
+}
+
+/* ============================
+   CARD TITLES
+   ============================ */
+
+.card-title {
+  font-size: 1.6rem;
+  color: #4b2e0f;
+}
+
+/* ============================
+   BUTTONS
+   ============================ */
+
+.btn-outline-success {
+  border-width: 2px;
+}
+
+.btn-outline-danger {
+  border-width: 2px;
+}
+
+.btn-warning,
+.btn-outline-secondary {
+  font-size: 1rem;
+  border-radius: 12px;
+  transition: 0.15s ease;
+}
+
+.btn-warning:hover {
+  opacity: 0.9;
+}
+
+/* ============================
+   SELECTABLE CARDS (RACE, CLASS, ETC)
+   ============================ */
+
+.card.selectable {
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: 0.25s ease-in-out;
+}
+
+.card.selectable:hover {
+  border-color: #b08c48;
+  background: #fffdf8;
+  box-shadow: 0 0 12px rgba(176, 140, 72, 0.4);
+}
+
+.card.selectable.selected {
+  border-color: #b08c48 !important;
+  background: #fffaf0 !important;
+  box-shadow: 0 0 15px rgba(176, 140, 72, 0.55);
+}
+
+/* ============================
+   ABILITY SCORE CARDS
+   ============================ */
+
+.card .h2 {
+  font-weight: bold;
+  color: #3c2f22;
+}
+
+.badge.bg-info {
+  background-color: #4d88a8 !important;
+}
+
+/* ============================
+   CHOICE CARDS
+   ============================ */
+
+.card.choice-card {
+  border-radius: 16px;
+  border-width: 2px;
+}
+
+.card.choice-card.active {
+  border-color: #d9a441;
+  background: #fffaf4;
+}
+
+.card.choice-card.inactive {
+  opacity: 0.5;
+}
+
+.card.choice-card .card-header {
+  border-bottom: none;
+  font-size: 1.2rem;
+}
+
+.btn.option-btn {
+  border-radius: 12px;
+  text-align: left;
+  border-width: 2px;
+  font-weight: 500;
+}
+
+.btn.option-btn:hover {
+  transform: scale(1.03);
+}
+
+/* ============================
+   REVIEW PANEL
+   ============================ */
+
+
+.card-header.bg-primary,
+.card-header.bg-success,
+.card-header.bg-info {
+  opacity: 0.93;
+}
+
+/* ============================
+   LIST ITEMS
+   ============================ */
+
+.list-group-item {
+  border-radius: 10px !important;
+  margin-bottom: 6px;
+  border: 1px solid #d7c7aa;
+}
+
+/* ============================
+   INPUTS
+   ============================ */
+
+.form-control {
+  border-radius: 12px;
+  border: 2px solid #d6c6a4;
+}
+
+.form-control:focus {
+  border-color: #b08c48;
+  box-shadow: 0 0 0 0.15rem rgba(176, 140, 72, 0.25);
+}
+
+.card-footer {
+  border-radius: 0px 0px 20px 20px;
+}
+
+// .text-gradient {
+//   background: linear-gradient(135deg, #e53e3e 0%, #dd6b20 50%, #319795 100%);
+//   -webkit-background-clip: text;
+//   -webkit-text-fill-color: transparent;
+//   background-clip: text;
+// }

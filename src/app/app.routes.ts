@@ -4,6 +4,7 @@ import { CharacterCreationComponent } from './pages/character-creation/character
 import { AuthGuard } from './shared/guards/auth.guard';
 import { HomePageComponent } from './pages/home-page/home-page.component';
 import { ManageSheetsComponent } from './pages/manage-sheets/manage-sheets.component';
+import { HomebrewCreationComponent } from './pages/homebrew-creation/homebrew-creation.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'login-screen', pathMatch: 'full' },
@@ -18,6 +19,11 @@ export const routes: Routes = [
   { 
     path: 'character-creation', 
     component: CharacterCreationComponent,
+    canActivate: [AuthGuard]
+  },
+  { 
+    path: 'homebrew-creation', 
+    component: HomebrewCreationComponent,
     canActivate: [AuthGuard]
   },
   { 

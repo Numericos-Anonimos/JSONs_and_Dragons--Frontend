@@ -11,6 +11,7 @@ import { NotificationComponent } from '../../shared/components/notification/noti
 import { FormsModule } from '@angular/forms';
 import { CharacterCreationService } from '../../shared/services/character-creation-service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { BaseDataService } from '../../shared/services/base-data-service';
 
 @Component({
   selector: 'app-character-creation',
@@ -20,7 +21,10 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 })
 export class CharacterCreationComponent {
 
-  constructor(private characterCreationService: CharacterCreationService) {}
+  constructor(
+    private characterCreationService: CharacterCreationService,
+    private baseDataService: BaseDataService
+  ) {}
 
   private destroyRef = inject(DestroyRef);
 
@@ -31,110 +35,14 @@ export class CharacterCreationComponent {
 
   character: Character = this.initializeCharacter();
 
-  races: { [key: string]: string[] } = {
-    'Dwarf': ['Hill Dwarf', 'Mountain Dwarf'],
-    'Elf': ['High Elf', 'Wood Elf', 'Dark Elf (Drow)'],
-    'Halfling': ['Lightfoot', 'Stout'],
-    'Human': ['Standard', 'Variant'],
-    'Dragonborn': ['Black', 'Blue', 'Brass', 'Bronze', 'Copper', 'Gold', 'Green', 'Red', 'Silver', 'White'],
-    'Gnome': ['Forest Gnome', 'Rock Gnome'],
-    'Half-Elf': ['Standard'],
-    'Half-Orc': ['Standard'],
-    'Tiefling': ['Standard']
-  };
+  races: string[] = [];
 
-  classes: { [key: string]: ClassInfo } = {
-    'Barbarian': { 
-      skills: ['Athletics', 'Perception', 'Survival', 'Intimidation', 'Nature'],
-      count: 2,
-      hitDice: '1d12',
-      savingThrows: ['STR', 'CON'],
-      equipment: ['Greataxe', 'Handaxes (2)', 'Explorer\'s Pack', 'Javelins (4)']
-    },
-    'Bard': { 
-      skills: ['Acrobatics', 'Athletics', 'Arcana', 'Deception', 'History', 'Insight', 'Intimidation', 'Investigation', 'Medicine', 'Nature', 'Perception', 'Performance', 'Persuasion', 'Religion', 'SleightOfHand', 'Stealth', 'Survival'],
-      count: 3,
-      hitDice: '1d8',
-      savingThrows: ['DEX', 'CHA'],
-      equipment: ['Rapier', 'Lute', 'Leather Armor', 'Dagger', 'Entertainer\'s Pack']
-    },
-    'Cleric': { 
-      skills: ['History', 'Insight', 'Medicine', 'Persuasion', 'Religion'],
-      count: 2,
-      hitDice: '1d8',
-      savingThrows: ['WIS', 'CHA'],
-      equipment: ['Mace', 'Shield', 'Chain Mail', 'Holy Symbol', 'Priest\'s Pack']
-    },
-    'Druid': { 
-      skills: ['Arcana', 'Insight', 'Medicine', 'Nature', 'Perception', 'Religion', 'Survival'],
-      count: 2,
-      hitDice: '1d8',
-      savingThrows: ['INT', 'WIS'],
-      equipment: ['Wooden Shield', 'Scimitar', 'Leather Armor', 'Druidic Focus', 'Explorer\'s Pack']
-    },
-    'Fighter': { 
-      skills: ['Acrobatics', 'Athletics', 'History', 'Insight', 'Intimidation', 'Perception', 'Survival'],
-      count: 2,
-      hitDice: '1d10',
-      savingThrows: ['STR', 'CON'],
-      equipment: ['Chain Mail', 'Longsword', 'Shield', 'Light Crossbow', 'Bolts (20)', 'Dungeoneer\'s Pack']
-    },
-    'Monk': { 
-      skills: ['Acrobatics', 'Athletics', 'History', 'Insight', 'Religion', 'Stealth'],
-      count: 2,
-      hitDice: '1d8',
-      savingThrows: ['STR', 'DEX'],
-      equipment: ['Shortsword', 'Dart (10)', 'Dungeoneer\'s Pack']
-    },
-    'Paladin': { 
-      skills: ['Athletics', 'Insight', 'Intimidation', 'Medicine', 'Persuasion', 'Religion'],
-      count: 2,
-      hitDice: '1d10',
-      savingThrows: ['WIS', 'CHA'],
-      equipment: ['Chain Mail', 'Shield', 'Longsword', 'Javelins (5)', 'Holy Symbol', 'Priest\'s Pack']
-    },
-    'Ranger': { 
-      skills: ['Athletics', 'Insight', 'Investigation', 'Nature', 'Perception', 'Stealth', 'Survival'],
-      count: 3,
-      hitDice: '1d10',
-      savingThrows: ['STR', 'DEX'],
-      equipment: ['Scale Mail', 'Longbow', 'Arrows (20)', 'Shortsword (2)', 'Explorer\'s Pack']
-    },
-    'Rogue': { 
-      skills: ['Acrobatics', 'Athletics', 'Deception', 'Insight', 'Intimidation', 'Investigation', 'Perception', 'Performance', 'Persuasion', 'SleightOfHand', 'Stealth'],
-      count: 4,
-      hitDice: '1d8',
-      savingThrows: ['DEX', 'INT'],
-      equipment: ['Rapier', 'Shortbow', 'Arrows (20)', 'Leather Armor', 'Thieves\' Tools', 'Burglar\'s Pack']
-    },
-    'Sorcerer': { 
-      skills: ['Arcana', 'Deception', 'Insight', 'Intimidation', 'Persuasion', 'Religion'],
-      count: 2,
-      hitDice: '1d6',
-      savingThrows: ['CON', 'CHA'],
-      equipment: ['Light Crossbow', 'Bolts (20)', 'Arcane Focus', 'Dungeoneer\'s Pack', 'Dagger (2)']
-    },
-    'Warlock': { 
-      skills: ['Arcana', 'Deception', 'History', 'Intimidation', 'Investigation', 'Nature', 'Religion'],
-      count: 2,
-      hitDice: '1d8',
-      savingThrows: ['WIS', 'CHA'],
-      equipment: ['Light Crossbow', 'Bolts (20)', 'Arcane Focus', 'Scholar\'s Pack', 'Leather Armor', 'Dagger (2)']
-    },
-    'Wizard': { 
-      skills: ['Arcana', 'History', 'Insight', 'Investigation', 'Medicine', 'Religion'],
-      count: 2,
-      hitDice: '1d6',
-      savingThrows: ['INT', 'WIS'],
-      equipment: ['Quarterstaff', 'Spellbook', 'Arcane Focus', 'Scholar\'s Pack', 'Dagger']
-    }
-  };
+  subraces: string[] = [];
 
-  backgrounds: string[] = [
-    'Acolyte', 'Charlatan', 'Criminal', 'Entertainer', 'Folk Hero', 
-    'Guild Artisan', 'Hermit', 'Noble', 'Outlander', 'Sage', 
-    'Sailor', 'Soldier', 'Urchin'
-  ];
+  classes: string[] = [];
+  subclasses: string[] = [];
+
+  backgrounds: string[] = [];
 
   alignments: string[] = [
     'Lawful Good', 'Neutral Good', 'Chaotic Good',
@@ -142,29 +50,7 @@ export class CharacterCreationComponent {
     'Lawful Evil', 'Neutral Evil', 'Chaotic Evil'
   ];
 
-  skillNameMapping: { [key: string]: keyof Skills } = {
-    'Acrobatics': 'Acrobatics',
-    'Animal Handling': 'Perception',
-    'Arcana': 'Arcana',
-    'Athletics': 'Athletics',
-    'Deception': 'Deception',
-    'History': 'History',
-    'Insight': 'Insight',
-    'Intimidation': 'Intimidation',
-    'Investigation': 'Investigation',
-    'Medicine': 'Medicine',
-    'Nature': 'Nature',
-    'Perception': 'Perception',
-    'Performance': 'Performance',
-    'Persuasion': 'Persuasion',
-    'Religion': 'Religion',
-    'Sleight of Hand': 'SleightOfHand',
-    'Stealth': 'Stealth',
-    'Survival': 'Survival'
-  };
-
   ngOnInit() {
-    this.getItems();
   }
 
   initializeCharacter(): Character {
@@ -228,42 +114,40 @@ export class CharacterCreationComponent {
     };
   }
 
-  getSubraces(): string[] {
-    return this.character.race ? this.races[this.character.race] : [];
+  getRaces() {
+    this.baseDataService.getRaces()
+    .pipe(takeUntilDestroyed(this.destroyRef))
+    .subscribe(response => {
+      this.races = response;
+    });
   }
 
-  getAvailableSkills(): string[] {
-    if (!this.character.class) return [];
-    return this.classes[this.character.class].skills;
-  }
-
-  getSkillCount(): number {
-    if (!this.character.class) return 0;
-    return this.classes[this.character.class].count;
-  }
-
-  getSelectedSkillsCount(): number {
-    return Object.values(this.character.skills).filter(Boolean).length;
-  }
-
-  toggleSkill(skillName: string): void {
-    const mappedSkill = this.skillNameMapping[skillName];
-    if (!mappedSkill) return;
-
-    const currentValue = this.character.skills[mappedSkill];
-    
-    if (currentValue) {
-      this.character.skills[mappedSkill] = false;
-    } else {
-      if (this.getSelectedSkillsCount() < this.getSkillCount()) {
-        this.character.skills[mappedSkill] = true;
-      }
+  getSubraces() {
+    if (this.character.race) {
+      this.baseDataService.getSubraces(this.character.race)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(response => {
+        this.subraces = response;
+      });
     }
   }
 
-  isSkillSelected(skillName: string): boolean {
-    const mappedSkill = this.skillNameMapping[skillName];
-    return mappedSkill ? this.character.skills[mappedSkill] : false;
+  getClasses() {
+    this.baseDataService.getClasses()
+    .pipe(takeUntilDestroyed(this.destroyRef))
+    .subscribe(response => {
+      this.classes = response;
+    });
+  }
+
+  getSubclasses() {
+    if (this.character.class) {
+      this.baseDataService.getSubclasses(this.character.class)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(response => {
+        this.subclasses = response;
+      });
+    }
   }
 
   getAbilityModifier(score: number): number {
@@ -319,14 +203,14 @@ export class CharacterCreationComponent {
     this.character.speed = this.getRaceSpeed();
     
     // Calculate hit points
-    if (this.character.class) {
-      const classInfo = this.classes[this.character.class];
-      const hitDie = parseInt(classInfo.hitDice.substring(2));
-      const conMod = this.getAbilityModifier(this.character.attributes.CON);
-      this.character.hitPoints.max = hitDie + conMod;
-      this.character.hitPoints.current = this.character.hitPoints.max;
-      this.character.hitDice = classInfo.hitDice;
-    }
+    // if (this.character.class) {
+    //   const classInfo = this.classes[this.character.class];
+    //   const hitDie = parseInt(classInfo.hitDice.substring(2));
+    //   const conMod = this.getAbilityModifier(this.character.attributes.CON);
+    //   this.character.hitPoints.max = hitDie + conMod;
+    //   this.character.hitPoints.current = this.character.hitPoints.max;
+    //   this.character.hitDice = classInfo.hitDice;
+    // }
   }
 
   getRaceSpeed(): string {
@@ -354,22 +238,32 @@ export class CharacterCreationComponent {
     });
     
     // Set saving throws
-    Object.keys(this.character.savingThrows).forEach(ability => {
-      this.character.savingThrows[ability as keyof SavingThrows] = 
-        classInfo.savingThrows.includes(ability);
-    });
+    // Object.keys(this.character.savingThrows).forEach(ability => {
+    //   this.character.savingThrows[ability as keyof SavingThrows] = 
+    //     classInfo.savingThrows.includes(ability);
+    // });
     
     // Set equipment
-    this.character.equipment = [...classInfo.equipment];
+    // this.character.equipment = [...classInfo.equipment];
     
     this.updateDerivedStats();
   }
 
   nextStep(): void {
     if (this.canProceed()) {
+      if (this.step == 1) {
+        this.getRaces();
+      }
       if (this.step === 2 && this.selectedSubrace) {
         this.applyRacialBonuses();
       }
+      if (this.step === 3 && this.character.class) {
+        this.characterCreationService.sendClass(this.character.class, '0')
+        .pipe(takeUntilDestroyed(this.destroyRef))
+        .subscribe(response => {
+          console.log(response);
+        });
+      } 
       if (this.step === 5) {
         this.updateDerivedStats();
       }
@@ -388,7 +282,7 @@ export class CharacterCreationComponent {
       case 1: return this.character.name.trim().length > 0;
       case 2: return this.character.race.length > 0 && this.selectedSubrace.length > 0;
       case 3: return this.character.class.length > 0;
-      case 4: return this.getSelectedSkillsCount() === this.getSkillCount();
+      // case 4: return this.getSelectedSkillsCount() === this.getSkillCount();
       case 5: return this.calculateUsedPoints() === this.pointBuyPoints;
       case 6: return this.character.background !== undefined && this.character.background.length > 0;
       case 7: return this.character.alignment !== undefined && this.character.alignment.length > 0;
@@ -503,14 +397,6 @@ export class CharacterCreationComponent {
       console.log(files);
       // upload filessssss
     }
-  }
-
-  getItems() {
-    this.characterCreationService.getItems()
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe(response => {
-        console.log(response);
-      });
   }
 
 }

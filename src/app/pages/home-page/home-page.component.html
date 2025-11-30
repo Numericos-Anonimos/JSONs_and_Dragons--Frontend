@@ -1,0 +1,130 @@
+<div class="home-container">
+  <!-- Hero Section -->
+  <section class="hero-section">
+    <div class="container">
+      <div class="row align-items-center">
+        <div class="col-lg-6 hero-content">
+          <h1 class="display-3 fw-bold mb-4 text-gradient">
+            JSONs & Dragons
+          </h1>
+          <p class="lead mb-4">
+            Crie e gerencie fichas de personagens totalmente personalizáveis e desenvolva seus próprios homebrews.
+          </p>
+          <div class="d-flex gap-3">
+            <button class="btn btn-primary btn-lg px-4">
+              <i class="bi bi-play-circle me-2"></i>Começar
+            </button>
+            <button class="btn btn-outline-light btn-lg px-4">
+              Saiba Mais
+            </button>
+          </div>
+        </div>
+        <div class="col-lg-6 text-center">
+          <div class="hero-image">
+            <div class="dice-container">
+              <div class="dice d20">
+                <span class="dice-number">20</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features Section -->
+  <section class="features-section py-5">
+    <div class="container">
+      <div class="text-center mb-5">
+        <h2 class="display-5 fw-bold mb-3">Funcionalidades Principais</h2>
+        <p class="text">Ferramentas poderosas para enriquecer sua experiência com fichas e homebrews</p>
+      </div>
+      
+      <div class="row g-4">
+        <div class="col-md-6 col-lg-4" *ngFor="let feature of features">
+          <div class="feature-card h-100">
+            <div class="feature-icon">
+              <i [class]="feature.icon"></i>
+            </div>
+            <h3 class="h5 fw-bold mb-3">{{ feature.title }}</h3>
+            <p class="text mb-0">{{ feature.description }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Homebrew Section -->
+  <section class="homebrew-section py-5">
+    <div class="container">
+      <div class="row align-items-center">
+        <div class="col-lg-6 order-lg-2 mb-4 mb-lg-0">
+          <div class="homebrew-visual">
+            <div class="template-card">
+              <div class="template-header">
+                <i class="bi bi-pencil-square"></i>
+                <span>Motor de Homebrew</span>
+              </div>
+              <div class="template-content">
+                <div class="template-field">Auxílio à criação de homebrews 100% customizáveis</div>
+                <div class="template-field">Classes, raças, magias e itens customizados</div>
+                <div class="template-field">Criação e gerenciamento de personagem adaptável a cada homebrew</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-6 order-lg-1">
+          <h2 class="display-6 fw-bold mb-4">Motor de Homebrew</h2>
+          <p class="lead mb-4">
+            Crie seu próprio conteúdo através de um sistema intuitivo de templates. Suas criações são autocontidas e totalmente personalizáveis.
+          </p>
+          <div class="homebrew-stats">
+            <div class="stat-box">
+              <span class="stat-number">∞</span>
+              <span class="stat-text">Possibilidades</span>
+            </div>
+            <div class="stat-box">
+              <span class="stat-number">100%</span>
+              <span class="stat-text">Personalizado</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Team Section -->
+  <section class="team-section py-5">
+    <div class="container">
+      <div class="text-center mb-5">
+        <h2 class="display-6 fw-bold mb-3">Equipe de Desenvolvimento</h2>
+        <p class="text">Grupo: JSONs & Dragons</p>
+      </div>
+      
+      <div class="row justify-content-center g-4">
+        <div class="col-md-4" *ngFor="let member of team">
+          <div class="team-card">
+            <div class="team-avatar">
+              <i class="bi bi-person-circle"></i>
+            </div>
+            <h4 class="fw-bold mb-2">{{ member.name }}</h4>
+            <p class="text mb-0">Desenvolvedor</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Section -->
+  <section class="cta-section py-5">
+    <div class="container">
+      <div class="cta-card text-center">
+        <h2 class="display-6 fw-bold mb-3">Pronto para começar sua aventura?</h2>
+        <p class="lead mb-4">Comece a criar fichas e homebrews agora mesmo!</p>
+        <button class="btn btn-light btn-lg px-5">
+          Iniciar
+        </button>
+      </div>
+    </div>
+  </section>
+</div>

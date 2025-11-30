@@ -5,9 +5,9 @@
       <!-- Header -->
       <div class="text-center mb-5">
         <h1 class="display-4 mb-3">
-          <i class="bi bi-dice-6"></i> D&D Character Creator
+          <i class="bi bi-dice-6"></i> Criar Personagem D&D
         </h1>
-        <p class="lead text-muted">Create your adventurer following the Player's Handbook</p>
+        <p class="lead text-muted">Crie seu aventureiro seguindo o Livro do Jogador ou suas próprias regras</p>
       </div>
 
       <!-- Progress Bar -->
@@ -19,7 +19,7 @@
                [attr.aria-valuenow]="step" 
                aria-valuemin="0" 
                [attr.aria-valuemax]="totalSteps">
-            Step {{step}} of {{totalSteps}}
+            Etapa {{step}} de {{totalSteps}}
           </div>
         </div>
       </div>
@@ -31,19 +31,19 @@
           <!-- Step 1: Character Name -->
           <div *ngIf="step === 1">
             <h3 class="card-title mb-4">
-              <i class="bi bi-person-circle"></i> Character Name
+              <i class="bi bi-person-circle"></i> Nome do Personagem
             </h3>
             <div class="mb-4">
-              <label for="characterName" class="form-label">What is your character's name?</label>
+              <label for="characterName" class="form-label">Qual é o nome do seu personagem?</label>
               <input 
                 type="text" 
                 class="form-control form-control-lg" 
                 id="characterName"
                 [(ngModel)]="character.name"
-                placeholder="Enter character name">
+                placeholder="Digite o nome do personagem">
             </div>
             <div class="mb-3">
-              <label for="fileUpload" class="form-label">Upload files</label>
+              <label for="fileUpload" class="form-label">Enviar arquivos</label>
               <input
                 class="form-control"
                 type="file"
@@ -55,19 +55,19 @@
           </div>
 
           <!-- Step 2: Race Selection -->
-                    <div *ngIf="step === 2">
+          <div *ngIf="step === 2">
             <h3 class="card-title mb-4">
-              <i class="bi bi-people"></i> Choose Your Race
+              <i class="bi bi-people"></i> Escolha Sua Raça
             </h3>
             
             <div class="mb-4">
-              <label class="form-label">Race</label>
+              <label class="form-label">Raça</label>
               <div class="row g-3">
-                <div class="col-md-4" *ngFor="let race of getObjectKeys(races)">
+                <div class="col-md-4" *ngFor="let race of races">
                   <div class="card h-100" 
                        [class.border-primary]="character.race === race"
                        [class.bg-light]="character.race === race"
-                       (click)="setRace(race)"
+                       (click)="setRace(race); getSubraces()"
                        style="cursor: pointer;">
                     <div class="card-body text-center">
                       <h5 class="card-title">{{race}}</h5>
@@ -78,9 +78,9 @@
             </div>
 
             <div class="mb-4" *ngIf="character.race">
-              <label class="form-label">Subrace</label>
+              <label class="form-label">Sub-raça</label>
               <div class="row g-3">
-                <div class="col-md-4" *ngFor="let subrace of getSubraces()">
+                <div class="col-md-4" *ngFor="let subrace of subraces">
                   <div class="card h-100" 
                        [class.border-primary]="selectedSubrace === subrace"
                        [class.bg-light]="selectedSubrace === subrace"
@@ -95,7 +95,7 @@
             </div>
 
             <div class="alert alert-info" *ngIf="selectedSubrace">
-              <strong>Racial Bonuses:</strong>
+              <strong>Bônus Raciais:</strong>
               <ul class="mb-0 mt-2">
                 <li *ngFor="let attr of getAttributeKeys()">
                   <span *ngIf="getRaceBonus(attr) > 0">
@@ -109,7 +109,7 @@
           <!-- Step 3: Class Selection -->
           <div *ngIf="step === 3">
             <h3 class="card-title mb-4">
-              <i class="bi bi-shield"></i> Choose Your Class
+              <i class="bi bi-shield"></i> Escolha Sua Classe
             </h3>
             <div class="row g-3">
               <div class="col-md-4" *ngFor="let className of getObjectKeys(classes)">
@@ -120,59 +120,19 @@
                      style="cursor: pointer;">
                   <div class="card-body text-center">
                     <h5 class="card-title">{{className}}</h5>
-                    <small class="text-muted d-block">
-                      {{classes[className].count}} skill proficiencies
-                    </small>
-                    <small class="text-muted d-block">
-                      Hit Die: {{classes[className].hitDice}}
-                    </small>
                   </div>
                 </div>
               </div>
             </div>
           </div>
 
-          <!-- Step 4: Skills Selection -->
-          <div *ngIf="step === 4">
-            <h3 class="card-title mb-4">
-              <i class="bi bi-star"></i> Choose Skills
-            </h3>
-            <p class="text-muted mb-3">
-              Select {{getSkillCount()}} skills. 
-              <span class="badge bg-info">
-                {{getSelectedSkillsCount()}} / {{getSkillCount()}} selected
-              </span>
-            </p>
-            <div class="row g-2">
-              <div class="col-md-4" *ngFor="let skill of getAvailableSkills()">
-                <button 
-                  class="btn w-100"
-                  [class.btn-primary]="isSkillSelected(skill)"
-                  [class.btn-outline-secondary]="!isSkillSelected(skill)"
-                  [disabled]="!isSkillSelected(skill) && getSelectedSkillsCount() >= getSkillCount()"
-                  (click)="toggleSkill(skill)">
-                  {{skill}}
-                </button>
-              </div>
-            </div>
-
-            <div class="alert alert-success mt-4" *ngIf="character.class">
-              <strong>Saving Throw Proficiencies:</strong>
-              <span *ngFor="let save of getObjectKeys(character.savingThrows); let last = last">
-                <span *ngIf="character.savingThrows[save]">
-                  {{save}}<span *ngIf="!last">, </span>
-                </span>
-              </span>
-            </div>
-          </div>
-
           <!-- Step 5: Ability Scores -->
           <div *ngIf="step === 5">
             <h3 class="card-title mb-4">
-              <i class="bi bi-graph-up"></i> Assign Ability Scores
+              <i class="bi bi-graph-up"></i> Atribua os Pontos de Atributo
             </h3>
             <p class="text-muted mb-3">
-              Point Buy System - Points remaining: 
+              Sistema de Pontos - Pontos restantes: 
               <span class="badge" [class.bg-success]="pointBuyPoints - calculateUsedPoints() === 0"
                     [class.bg-warning]="pointBuyPoints - calculateUsedPoints() > 0">
                 {{pointBuyPoints - calculateUsedPoints()}}
@@ -186,7 +146,7 @@
                     <div class="d-flex justify-content-between align-items-center mb-2">
                       <h5 class="mb-0 text-uppercase">{{ability}}</h5>
                       <span class="badge bg-secondary">
-                        Cost: {{getPointCost(character.attributes[ability])}}
+                        Custo: {{getPointCost(character.attributes[ability])}}
                       </span>
                     </div>
                     
@@ -205,7 +165,7 @@
                         </small>
                         <div>
                           <span class="badge bg-info">
-                            Modifier: {{getAbilityModifier(character.attributes[ability]) >= 0 ? '+' : ''}}{{getAbilityModifier(character.attributes[ability])}}
+                            Modificador: {{getAbilityModifier(character.attributes[ability]) >= 0 ? '+' : ''}}{{getAbilityModifier(character.attributes[ability])}}
                           </span>
                         </div>
                       </div>
@@ -223,14 +183,14 @@
             </div>
 
             <div class="alert alert-warning mt-4">
-              <i class="bi bi-info-circle"></i> <strong>Note:</strong> Racial bonuses will be applied after this step.
+              <i class="bi bi-info-circle"></i> <strong>Atenção:</strong> Bônus raciais serão aplicados após esta etapa.
             </div>
           </div>
 
           <!-- Step 6: Background -->
           <div *ngIf="step === 6">
             <h3 class="card-title mb-4">
-              <i class="bi bi-book"></i> Choose Background
+              <i class="bi bi-book"></i> Escolha o Antecedente
             </h3>
             <div class="row g-3">
               <div class="col-md-4" *ngFor="let bg of backgrounds">
@@ -250,7 +210,7 @@
           <!-- Step 7: Alignment -->
           <div *ngIf="step === 7">
             <h3 class="card-title mb-4">
-              <i class="bi bi-compass"></i> Choose Alignment
+              <i class="bi bi-compass"></i> Escolha o Alinhamento
             </h3>
             <div class="row g-3">
               <div class="col-md-4" *ngFor="let align of alignments">
@@ -270,11 +230,11 @@
           <!-- Step 8: Equipment & Features -->
           <div *ngIf="step === 8">
             <h3 class="card-title mb-4">
-              <i class="bi bi-backpack"></i> Equipment & Features
+              <i class="bi bi-backpack"></i> Equipamentos & Características
             </h3>
 
             <div class="mb-4">
-              <h5>Starting Equipment</h5>
+              <h5>Equipamentos Iniciais</h5>
               <ul class="list-group">
                 <li class="list-group-item" *ngFor="let item of character.equipment">
                   {{item}}
@@ -283,33 +243,33 @@
             </div>
 
             <div class="mb-4">
-              <label class="form-label">Add Custom Equipment</label>
+              <label class="form-label">Adicionar Equipamento Personalizado</label>
               <div class="input-group">
                 <input 
                   type="text" 
                   class="form-control" 
-                  placeholder="Enter equipment name"
+                  placeholder="Digite o nome do equipamento"
                   #customEquipment>
                 <button 
                   class="btn btn-outline-primary" 
                   (click)="character.equipment.push(customEquipment.value); customEquipment.value = ''">
-                  Add
+                  Adicionar
                 </button>
               </div>
             </div>
 
             <div class="mb-4">
-              <label class="form-label">Features & Traits (Optional)</label>
+              <label class="form-label">Características & Traços (Opcional)</label>
               <div class="input-group mb-2">
                 <input 
                   type="text" 
                   class="form-control" 
-                  placeholder="Enter feature or trait"
+                  placeholder="Digite uma característica ou traço"
                   #customFeature>
                 <button 
                   class="btn btn-outline-primary" 
                   (click)="character.features.push(customFeature.value); customFeature.value = ''">
-                  Add
+                  Adicionar
                 </button>
               </div>
               <ul class="list-group" *ngIf="character.features.length > 0">

@@ -5,21 +5,18 @@ import { environment } from "../../environments/environment";
 
 @Injectable({ providedIn: 'root' })
 export class CharacterCreationService {
-  private baseUrl = `${environment.apiUrl}/base`;
+  private baseUrl = `${environment.apiUrl}/criar`;
 
   constructor(private http: HttpClient) {}
 
-//   postAttributes(): Observable<string[]> {
-//     return this.http.post<string[]>(this.baseUrl);
-//   }
-
-//   getUser(id: string): Observable<User> {
-//     const url = `${this.baseUrl}/${id}`;
-//     return this.http.get<User>(url);
-//   }
-
-  getItems(): Observable<string> {
-    const url = `${this.baseUrl}/itens/`;
-    return this.http.get<string>(url);
+  sendClass(classe: string, level: string): Observable<any> {
+    const url = `${this.baseUrl}/ficha/classe/${classe}/${level}`;
+    return this.http.get<any>(url);
   }
+
+  sendRace(race:string): Observable<any> {
+    const url = `${this.baseUrl}/ficha/raca/${race}`;
+    return this.http.get<any>(url);
+  }
+
 }

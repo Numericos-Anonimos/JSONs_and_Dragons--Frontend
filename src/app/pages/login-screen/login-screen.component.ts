@@ -19,27 +19,37 @@ export class LoginComponent {
 
   errorMessage = '';
 
-  // loginWithGoogle() {
-  //   window.location.href = 
-  //     "https://jsons-and-dragons.onrender.com/auth/google/login";
-  // }
+    ngOnInit() {
+    this.route.queryParams.subscribe(params => {
+      const token = params['token'];
+      if (token) {
+        this.auth.saveToken(token);
+        this.router.navigate(['/home']);
+      }
+    });
+  }
 
   loginWithGoogle() {
-    // Mock login
-    try {
-      // Pretend JWT returned from backend
-      const fakeToken =
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.' + // header
-  'eyJzdWIiOiJmYWtlVXNlckBleGFtcGxlLmNvbSIsIm5hbWUiOiJEZXYgVXNlciJ9.' + // payload
-  'signature'; // dummy signature
-
-      // Save token using your AuthService
-      this.auth.saveToken(fakeToken);
-
-      // Navigate to the main app
-      this.router.navigate(['/character-creation']);
-    } catch (err) {
-      this.errorMessage = 'Failed to log in (mock)';
-    }
+    window.location.href = 
+      "https://jsons-and-dragons.onrender.com/auth/login";
   }
+
+  // loginWithGoogle() {
+  //   // Mock login
+  //   try {
+  //     // Pretend JWT returned from backend
+  //     const fakeToken =
+  // 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.' + // header
+  // 'eyJzdWIiOiJmYWtlVXNlckBleGFtcGxlLmNvbSIsIm5hbWUiOiJEZXYgVXNlciJ9.' + // payload
+  // 'signature'; // dummy signature
+
+  //     // Save token using your AuthService
+  //     this.auth.saveToken(fakeToken);
+
+  //     // Navigate to the main app
+  //     this.router.navigate(['/home']);
+  //   } catch (err) {
+  //     this.errorMessage = 'Failed to log in (mock)';
+  //   }
+  // }
 }

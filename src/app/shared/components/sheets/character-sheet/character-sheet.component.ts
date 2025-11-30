@@ -5,6 +5,7 @@ export interface Character {
   name: string;
   race: string;
   class: string;
+  subclass: string;
   level: number;
   background?: string;
   alignment?: string;

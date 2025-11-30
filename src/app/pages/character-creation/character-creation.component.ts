@@ -12,6 +12,8 @@ import { FormsModule } from '@angular/forms';
 import { CharacterCreationService } from '../../shared/services/character-creation-service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { BaseDataService } from '../../shared/services/base-data-service';
+import { Choice } from '../../shared/models/choice.model';
+import { HttpClient } from "@angular/common/http";
 
 @Component({
   selector: 'app-character-creation',
@@ -23,10 +25,17 @@ export class CharacterCreationComponent {
 
   constructor(
     private characterCreationService: CharacterCreationService,
-    private baseDataService: BaseDataService
+    private baseDataService: BaseDataService,
+    private http: HttpClient
   ) {}
 
   private destroyRef = inject(DestroyRef);
+
+  choices: Choice[] = [];
+  selections: { [key: number]: number[] } = {};
+  activeChoices = new Set<number>([0]);
+  loadedOptions: { [key: number]: string[] } = {};
+  loading: { [key: number]: boolean } = {};
 
   step: number = 1;
   totalSteps: number = 9;
@@ -58,6 +67,7 @@ export class CharacterCreationComponent {
       name: '',
       race: '',
       class: '',
+      subclass: '',
       level: 1,
       background: '',
       alignment: '',
@@ -150,6 +160,44 @@ export class CharacterCreationComponent {
     }
   }
 
+  loadDynamicOptions(): void {
+    this.choices.forEach((choice, index) => {
+      if (typeof choice.opcoes === 'object' && choice.opcoes.action === 'REQUEST') {
+        this.loadOptionsFromAPI(index, choice.opcoes.query);
+      }
+    });
+  }
+
+  loadOptionsFromAPI(choiceIndex: number, query: string): void {
+    this.loading[choiceIndex] = true;
+    
+    // Substitua pela sua URL da API
+    this.http.get<string[]>(`api/${query}`).subscribe({
+      next: (data) => {
+        this.loadedOptions[choiceIndex] = data;
+        this.loading[choiceIndex] = false;
+      },
+      error: (err) => {
+        console.error(`Erro ao carregar opções para ${query}:`, err);
+        // Mock para desenvolvimento
+        this.loadedOptions[choiceIndex] = ['Espada Longa', 'Machado de Batalha', 'Lança', 'Martelo de Guerra'];
+        this.loading[choiceIndex] = false;
+      }
+    });
+  }
+
+  getClassChoices() {
+    this.characterCreationService.sendClass(this.character.class, '0')
+    .pipe(takeUntilDestroyed(this.destroyRef))
+    .subscribe(response => {
+      console.log(response);
+      this.choices = response;
+      this.loadDynamicOptions();
+    });
+  }
+
+  
+
   getAbilityModifier(score: number): number {
     return Math.floor((score - 10) / 2);
   }
@@ -231,6 +279,7 @@ export class CharacterCreationComponent {
   selectClass(className: any): void {
     this.character.class = className;
     const classInfo = this.classes[className];
+    this.getSubclasses();
     
     // Reset skills
     Object.keys(this.character.skills).forEach(skill => {
@@ -256,13 +305,10 @@ export class CharacterCreationComponent {
       }
       if (this.step === 2 && this.selectedSubrace) {
         this.applyRacialBonuses();
+        this.getClasses();
       }
       if (this.step === 3 && this.character.class) {
-        this.characterCreationService.sendClass(this.character.class, '0')
-        .pipe(takeUntilDestroyed(this.destroyRef))
-        .subscribe(response => {
-          console.log(response);
-        });
+        this.getClassChoices();
       } 
       if (this.step === 5) {
         this.updateDerivedStats();
@@ -281,7 +327,7 @@ export class CharacterCreationComponent {
     switch (this.step) {
       case 1: return this.character.name.trim().length > 0;
       case 2: return this.character.race.length > 0 && this.selectedSubrace.length > 0;
-      case 3: return this.character.class.length > 0;
+      case 3: return this.character.class.length > 0 && this.character.subclass.length > 0;
       // case 4: return this.getSelectedSkillsCount() === this.getSkillCount();
       case 5: return this.calculateUsedPoints() === this.pointBuyPoints;
       case 6: return this.character.background !== undefined && this.character.background.length > 0;
@@ -300,7 +346,7 @@ export class CharacterCreationComponent {
       'Dark Elf (Drow)': { DEX: 2, CHA: 1 },
       'Lightfoot': { DEX: 2, CHA: 1 },
       'Stout': { DEX: 2, CON: 1 },
-      'Standard': {}, // Human handled separately
+      'Standard': {},
       'Dragonborn': { STR: 2, CHA: 1 },
       'Forest Gnome': { INT: 2, DEX: 1 },
       'Rock Gnome': { INT: 2, CON: 1 },
@@ -397,6 +443,160 @@ export class CharacterCreationComponent {
       console.log(files);
       // upload filessssss
     }
+  }
+
+  //choices
+
+  getOptions(choiceIndex: number): string[] {
+    const choice = this.choices[choiceIndex];
+    if (Array.isArray(choice.opcoes)) {
+      return choice.opcoes;
+    }
+    return this.loadedOptions[choiceIndex] || [];
+  }
+
+  isLoading(choiceIndex: number): boolean {
+    return this.loading[choiceIndex] || false;
+  }
+
+  handleSelection(choiceIndex: number, optionIndex: number): void {
+    const choice = this.choices[choiceIndex];
+    const currentSelection = this.selections[choiceIndex] || [];
+    
+    let newSelection: number[];
+    
+    if (choice.n === 1) {
+      // Seleção única
+      newSelection = [optionIndex];
+    } else {
+      // Seleção múltipla
+      if (currentSelection.includes(optionIndex)) {
+        // Remove se já estava selecionado
+        newSelection = currentSelection.filter(i => i !== optionIndex);
+      } else if (currentSelection.length < choice.n) {
+        // Adiciona se não excedeu o limite
+        newSelection = [...currentSelection, optionIndex];
+      } else {
+        // Já atingiu o limite
+        return;
+      }
+    }
+
+    this.selections[choiceIndex] = newSelection;
+    this.updateActiveChoices();
+  }
+
+  calculateNextChoice(currentIndex: number, selectedOptionIndex: number): number | null {
+    const choice = this.choices[currentIndex];
+    const relacao = choice.relacao[selectedOptionIndex];
+    const offset = choice.offsets[selectedOptionIndex];
+    
+    // Se ambos são 0, não há próxima escolha
+    if (relacao === 0 && offset === 0) {
+      return null;
+    }
+    
+    const nextIndex = currentIndex + relacao + offset;
+    
+    console.log(`Escolha ${currentIndex} "${choice.label}", Opção ${selectedOptionIndex}:`);
+    console.log(`  relacao: ${relacao}, offset: ${offset}`);
+    console.log(`  cálculo: ${currentIndex} + ${relacao} + ${offset} = ${nextIndex}`);
+    
+    return nextIndex >= 0 && nextIndex < this.choices.length ? nextIndex : null;
+  }
+
+  updateActiveChoices(): void {
+    const newActiveChoices = new Set<number>();
+    
+    // Adiciona todas as escolhas que devem estar sempre ativas
+    // (aquelas que não dependem de nenhuma escolha anterior)
+    for (let i = 0; i < this.choices.length; i++) {
+      // Verifica se alguma escolha anterior pode desbloquear esta
+      let hasDependency = false;
+      
+      for (let j = 0; j < i; j++) {
+        const choice = this.choices[j];
+        // Se alguma opção da escolha anterior pode desbloquear esta escolha
+        for (let optIdx = 0; optIdx < choice.relacao.length; optIdx++) {
+          const nextIndex = j + choice.relacao[optIdx] + choice.offsets[optIdx];
+          if (nextIndex === i) {
+            hasDependency = true;
+            break;
+          }
+        }
+        if (hasDependency) break;
+      }
+      
+      // Se não tem dependência, está sempre ativa
+      if (!hasDependency) {
+        newActiveChoices.add(i);
+        console.log(`Escolha ${i} "${this.choices[i].label}" não tem dependências - sempre ativa`);
+      }
+    }
+    
+    // Agora processa as escolhas que desbloqueiam outras
+    let changed = true;
+    let iterations = 0;
+    const maxIterations = 100;
+    
+    while (changed && iterations < maxIterations) {
+      changed = false;
+      iterations++;
+      
+      for (let i = 0; i < this.choices.length; i++) {
+        if (!newActiveChoices.has(i)) continue;
+        
+        const selection = this.selections[i];
+        if (!selection || selection.length !== this.choices[i].n) continue;
+
+        selection.forEach(optionIndex => {
+          const nextIndex = this.calculateNextChoice(i, optionIndex);
+          if (nextIndex !== null && !newActiveChoices.has(nextIndex)) {
+            console.log(`Escolha ${i} "${this.choices[i].label}", opção ${optionIndex} -> desbloqueia escolha ${nextIndex} "${this.choices[nextIndex].label}"`);
+            newActiveChoices.add(nextIndex);
+            changed = true;
+          }
+        });
+      }
+    }
+
+    console.log('Escolhas ativas:', Array.from(newActiveChoices).sort((a,b) => a-b));
+    this.activeChoices = newActiveChoices;
+  }
+
+  isChoiceActive(index: number): boolean {
+    return this.activeChoices.has(index);
+  }
+
+  isChoiceComplete(index: number): boolean {
+    const selection = this.selections[index];
+    return selection ? selection.length === this.choices[index].n : false;
+  }
+
+  isOptionSelected(choiceIndex: number, optionIndex: number): boolean {
+    return this.selections[choiceIndex]?.includes(optionIndex) || false;
+  }
+
+  getSelectionCount(choiceIndex: number): number {
+    return this.selections[choiceIndex]?.length || 0;
+  }
+
+  getSelectionSummary(): Array<{ label: string; options: string[] }> {
+    return Object.entries(this.selections)
+      .filter(([, sel]) => sel.length > 0)
+      .map(([idx, sel]) => {
+        const choice = this.choices[parseInt(idx)];
+        const options = this.getOptions(parseInt(idx));
+        const selectedOptions = sel.map(i => options[i]);
+        return {
+          label: choice.label,
+          options: selectedOptions
+        };
+      });
+  }
+
+  getActiveChoicesArray(): number[] {
+    return Array.from(this.activeChoices).sort((a, b) => a - b);
   }
 
 }

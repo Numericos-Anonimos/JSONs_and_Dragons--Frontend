@@ -19,4 +19,22 @@ export class CharacterCreationService {
     return this.http.get<any>(url);
   }
 
+  // loadOptionsFromAPI(choiceIndex: number, query: string): void {
+  //   this.loading[choiceIndex] = true;
+    
+  //   // Substitua pela sua URL da API
+  //   this.http.get<string[]>(`api/${query}`).subscribe({
+  //     next: (data) => {
+  //       this.loadedOptions[choiceIndex] = data;
+  //       this.loading[choiceIndex] = false;
+  //     },
+  //     error: (err) => {
+  //       console.error(`Erro ao carregar opções para ${query}:`, err);
+  //       // Mock para desenvolvimento
+  //       this.loadedOptions[choiceIndex] = ['Espada Longa', 'Machado de Batalha', 'Lança', 'Martelo de Guerra'];
+  //       this.loading[choiceIndex] = false;
+  //     }
+  //   });
+  // }
+
 }

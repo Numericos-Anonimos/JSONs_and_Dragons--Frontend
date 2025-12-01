@@ -110,8 +110,11 @@ export class HomebrewCreationComponent {
     }
   }
 
+  // Lógica de validação baseada no character-creation.component.ts
   canProceed(): boolean {
     switch (this.step) {
+      case 1: return this.character.name.trim().length > 0;
+      // Adicione aqui a lógica de validação para as próximas etapas (ex: case 2: ...)
       default: return true;
     }
   }
@@ -125,8 +128,12 @@ export class HomebrewCreationComponent {
     }
   }
 
+  // Lógica de reinício baseada no character-creation.component.ts
   resetHomebrew() {
-    
+    if (confirm('Tem certeza de que deseja recomeçar? Todo o progresso será perdido.')) {
+      this.character = this.initializeCharacter();
+      this.step = 1;
+    }
   }
 
 }

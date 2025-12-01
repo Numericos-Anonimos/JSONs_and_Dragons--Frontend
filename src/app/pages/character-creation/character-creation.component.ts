@@ -159,16 +159,6 @@ export class CharacterCreationComponent {
     });
   }
 
-  getSubraces() {
-    if (this.character.race) {
-      this.baseDataService.getSubraces(this.character.race)
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe(response => {
-        this.subraces = response;
-      });
-    }
-  }
-
   getClasses() {
     this.baseDataService.getClasses()
     .pipe(takeUntilDestroyed(this.destroyRef))
@@ -337,21 +327,18 @@ export class CharacterCreationComponent {
 
   nextStep(): void {
     if (this.canProceed()) {
-      if (this.step == 1) {
+      if (this.step === 1) {
         this.getRaces();
+        this.getBackgrounds();
       }
-      if (this.step == 2) {
-        this.saveCharacter();
-      }
-      if (this.step === 3 && this.selectedSubrace) {
-        this.applyRacialBonuses();
+      if (this.step === 2) {
+        this.saveCharacter(); // quebrou
         this.getClasses();
       }
       if (this.step === 4 && this.character.class) {
         this.getClassChoices();
       } 
       if (this.step === 5 && this.character.class) {
-        this.getBackgrounds();
       } 
       // if (this.step === 6) {
       //   this.updateDerivedStats();
@@ -377,40 +364,6 @@ export class CharacterCreationComponent {
       case 7: return this.character.alignment !== undefined && this.character.alignment.length > 0;
       case 8: return true;
       default: return true;
-    }
-  }
-
-  applyRacialBonuses(): void {
-    const bonuses: { [key: string]: Partial<Attributes> } = {
-      'Hill Dwarf': { CON: 2, WIS: 1 },
-      'Mountain Dwarf': { STR: 2, CON: 2 },
-      'High Elf': { DEX: 2, INT: 1 },
-      'Wood Elf': { DEX: 2, WIS: 1 },
-      'Dark Elf (Drow)': { DEX: 2, CHA: 1 },
-      'Lightfoot': { DEX: 2, CHA: 1 },
-      'Stout': { DEX: 2, CON: 1 },
-      'Standard': {},
-      'Dragonborn': { STR: 2, CHA: 1 },
-      'Forest Gnome': { INT: 2, DEX: 1 },
-      'Rock Gnome': { INT: 2, CON: 1 },
-      'Half-Elf': { CHA: 2 },
-      'Half-Orc': { STR: 2, CON: 1 },
-      'Tiefling': { INT: 1, CHA: 2 }
-    };
-
-    // Apply racial bonuses
-    const bonus = bonuses[this.selectedSubrace];
-    if (bonus) {
-      Object.keys(bonus).forEach(ability => {
-        this.character.attributes[ability as keyof Attributes] += bonus[ability as keyof Attributes]!;
-      });
-    }
-
-    // Human gets +1 to all
-    if (this.selectedSubrace === 'Standard' && this.character.race === 'Human') {
-      Object.keys(this.character.attributes).forEach(ability => {
-        this.character.attributes[ability as keyof Attributes]++;
-      });
     }
   }
 
@@ -476,7 +429,26 @@ export class CharacterCreationComponent {
 
   setRace(race: any) {
     this.character.race = race;
-    this.selectedSubrace = '';
+    // this.selectedSubrace = ''; <--- Não precisamos mais limpar isso manualmente aqui
+
+    // Chama o endpoint do Python: POST /ficha/{id}/raca/{race}
+    // Nota: Precisamos do ID do personagem (salvo no passo anterior)
+    this.characterCreationService.sendRace(this.character.id, race)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(response => {
+        // O Python retorna algo como: { message: "Ok", required_decision: [...] }
+        console.log('Resposta da Raça:', response);
+        
+        // Aqui conectamos a lógica de decisão
+        if (response.required_decision) {
+            this.choices = response.required_decision;
+            // Dica: Você precisará garantir que o HTML da Etapa 3 mostre 
+            // a lista de 'choices', assim como a Etapa 5 faz.
+        } else {
+            // Se veio vazio {}, significa que não tem mais pendências de raça
+            this.choices = []; 
+        }
+      });
   }
 
   onFilesSelected(event: Event) {
@@ -642,7 +614,7 @@ export class CharacterCreationComponent {
     return Array.from(this.activeChoices).sort((a, b) => a - b);
   }
 
-  saveCharacter() {
+  saveCharacter() { // Parece que eu quebrei isso
     const ficha: CriarFichaRequest = {
       nome: this.character.name,
       atributos: {
@@ -654,13 +626,15 @@ export class CharacterCreationComponent {
           carisma: this.character.attributes.CHA
       }
     }
+    
     this.characterCreationService.createCharacter(ficha)
     .pipe(takeUntilDestroyed(this.destroyRef))
     .subscribe(response => {
-      console.log('enviou');
+      console.log('Ficha criada com sucesso:', response);
+      
+      this.character.id = response.id; 
     });
   }
-
 }
 
 interface ClassInfo {

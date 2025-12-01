@@ -18,9 +18,9 @@ export class CharacterCreationService {
     return this.http.get<any>(url);
   }
 
-  sendRace(race:string): Observable<any> {
-    const url = `${this.baseUrl}/ficha/raca/${race}`;
-    return this.http.get<any>(url);
+  sendRace(id: string, race: string): Observable<any> {
+    const url = `${this.baseUrl}/ficha/${id}/raca/${race}`;
+    return this.http.post<any>(url, {});
   }
 
 createCharacter(ficha: CriarFichaRequest): Observable<any> {

@@ -616,15 +616,15 @@ export class CharacterCreationComponent {
   }
 
   saveCharacter() {
-    const ficha: any = {
+    const ficha: CriarFichaRequest = {
       nome: this.character.name,
       atributos: {
-          str: this.character.attributes.STR,
-          dex: this.character.attributes.DEX,
-          con: this.character.attributes.CON,
-          int: this.character.attributes.INT,
-          wis: this.character.attributes.WIS,
-          cha: this.character.attributes.CHA
+          forca: this.character.attributes.STR,
+          destreza: this.character.attributes.DEX,
+          constituicao: this.character.attributes.CON,
+          inteligencia: this.character.attributes.INT,
+          sabedoria: this.character.attributes.WIS,
+          carisma: this.character.attributes.CHA
       }
     }
     

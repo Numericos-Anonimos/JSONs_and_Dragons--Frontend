@@ -15,18 +15,39 @@ export class CharacterCreationService {
 
   sendClass(classe: string, level: string): Observable<any> {
     const url = `${this.baseUrl}/ficha/classe/${classe}/${level}`;
-    return this.http.get<any>(url);
+
+    const token = this.authService.getToken();
+
+    const headers = token ? new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`
+    }) : new HttpHeaders({
+      'Content-Type': 'application/json'
+    });
+
+    return this.http.get<any>(url, { headers });
   }
 
   sendRace(id: string, race: string): Observable<any> {
     const url = `${this.baseUrl}/ficha/${id}/raca/${race}`;
-    return this.http.post<any>(url, {});
+
+    const token = this.authService.getToken();
+
+    const headers = token ? new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`
+    }) : new HttpHeaders({
+      'Content-Type': 'application/json'
+    });
+
+    return this.http.post<any>(url, {}, { headers });
   }
 
 createCharacter(ficha: CriarFichaRequest): Observable<any> {
     const url = `${this.baseUrl}/ficha/`;
 
     const token = this.authService.getToken();
+
     const headers = token ? new HttpHeaders({
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${token}`
@@ -36,23 +57,4 @@ createCharacter(ficha: CriarFichaRequest): Observable<any> {
 
     return this.http.post<any>(url, ficha, { headers });
   }
-
-  // loadOptionsFromAPI(choiceIndex: number, query: string): void {
-  //   this.loading[choiceIndex] = true;
-    
-  //   // Substitua pela sua URL da API
-  //   this.http.get<string[]>(`api/${query}`).subscribe({
-  //     next: (data) => {
-  //       this.loadedOptions[choiceIndex] = data;
-  //       this.loading[choiceIndex] = false;
-  //     },
-  //     error: (err) => {
-  //       console.error(`Erro ao carregar opções para ${query}:`, err);
-  //       // Mock para desenvolvimento
-  //       this.loadedOptions[choiceIndex] = ['Espada Longa', 'Machado de Batalha', 'Lança', 'Martelo de Guerra'];
-  //       this.loading[choiceIndex] = false;
-  //     }
-  //   });
-  // }
-
 }

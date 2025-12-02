@@ -11,11 +11,12 @@ import { FormsModule } from '@angular/forms';
 import { CharacterCreationService } from '../../shared/services/character-creation-service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { BaseDataService } from '../../shared/services/base-data-service';
-import { Choice } from '../../shared/models/choice.model';
 import { HttpClient } from "@angular/common/http";
 import { ActivatedRoute } from '@angular/router';
 import { CriarFichaRequest } from '../../shared/models/criar-ficha-request.model';
 import { Atributos } from '../../shared/models/atributos.model';
+import { Decision } from '../../shared/models/decision.model';
+import { ApiResponse } from '../../shared/models/api-response.model';
 
 @Component({
   selector: 'app-character-creation',
@@ -34,11 +35,14 @@ export class CharacterCreationComponent {
 
   private destroyRef = inject(DestroyRef);
 
-  choices: Choice[] = [];
   selections: { [key: number]: number[] } = {};
   activeChoices = new Set<number>([0]);
   loadedOptions: { [key: number]: string[] } = {};
   loading: { [key: number]: boolean } = {};
+
+  decisionsArray: Decision[] = [];
+  isLoadingDecision: boolean = false;
+  currentDecisionIndex = 0;
 
   step: number = 1;
   totalSteps: number = 8;
@@ -70,6 +74,25 @@ export class CharacterCreationComponent {
     //     this.loadCharacterById(id);
     //   }
     // });
+  }
+
+  ngOnDestroy(): void {
+    document.body.classList.remove('loading-active');
+  }
+
+  // Função para controlar o loading
+  private setLoading(loading: boolean): void {
+    console.log('🔄 setLoading chamado:', loading);
+    this.isLoadingDecision = loading;
+    console.log('📊 isLoadingDecision agora é:', this.isLoadingDecision);
+    
+    if (loading) {
+      document.body.classList.add('loading-active');
+      console.log('✅ Classe loading-active ADICIONADA ao body');
+    } else {
+      document.body.classList.remove('loading-active');
+      console.log('❌ Classe loading-active REMOVIDA do body');
+    }
   }
 
   initializeCharacter(): Character {
@@ -178,20 +201,10 @@ export class CharacterCreationComponent {
   }
 
   getBackgrounds() {
-    if (this.character.class) {
-      this.baseDataService.getBackgrounds()
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe(response => {
-        this.backgrounds = response;
-      });
-    }
-  }
-
-  loadDynamicOptions(): void {
-    this.choices.forEach((choice, index) => {
-      if (typeof choice.opcoes === 'object' && choice.opcoes.action === 'REQUEST') {
-        this.loadOptionsFromAPI(index, choice.opcoes.query);
-      }
+    this.baseDataService.getBackgrounds()
+    .pipe(takeUntilDestroyed(this.destroyRef))
+    .subscribe(response => {
+      this.backgrounds = response;
     });
   }
 
@@ -210,16 +223,6 @@ export class CharacterCreationComponent {
         this.loadedOptions[choiceIndex] = ['Espada Longa', 'Machado de Batalha', 'Lança', 'Martelo de Guerra'];
         this.loading[choiceIndex] = false;
       }
-    });
-  }
-
-  getClassChoices() {
-    this.characterCreationService.sendClass(this.character.class, '0')
-    .pipe(takeUntilDestroyed(this.destroyRef))
-    .subscribe(response => {
-      console.log(response);
-      this.choices = response;
-      this.loadDynamicOptions();
     });
   }
 
@@ -328,21 +331,26 @@ export class CharacterCreationComponent {
   nextStep(): void {
     if (this.canProceed()) {
       if (this.step === 1) {
+        // loading everything
         this.getRaces();
+        this.getClasses();
         this.getBackgrounds();
       }
       if (this.step === 2) {
-        this.saveCharacter(); // quebrou
-        this.getClasses();
+        this.saveCharacter();
+      }
+      if (this.step === 3) {
+        // this.sendBackground();
       }
       if (this.step === 4 && this.character.class) {
-        this.getClassChoices();
+        // this.getClassChoices();
       } 
       if (this.step === 5 && this.character.class) {
       } 
       // if (this.step === 6) {
       //   this.updateDerivedStats();
       // }
+      this.clearDecisions();
       this.step++;
     }
   }
@@ -354,10 +362,13 @@ export class CharacterCreationComponent {
   }
 
   canProceed(): boolean {
+    if (this.decisionsArray.length > 0 && !this.decisionsArray.every(d => d.isComplete)) {
+      return false;
+    }
     switch (this.step) {
       case 1: return this.character.name.trim().length > 0;
       case 2: return this.calculateUsedPoints() === this.pointBuyPoints;
-      case 3: return this.character.race.length > 0 && this.selectedSubrace.length > 0;
+      case 3: return this.character.race.length > 0;
       case 4: return this.character.class.length > 0 && this.character.subclass.length > 0;
       // case 5: return this.getSelectedSkillsCount() === this.getSkillCount();
       case 6: return this.character.background !== undefined && this.character.background.length > 0;
@@ -427,27 +438,90 @@ export class CharacterCreationComponent {
     return this.character.skills;
   }
 
-  setRace(race: any) {
-    this.character.race = race;
-    // this.selectedSubrace = ''; <--- Não precisamos mais limpar isso manualmente aqui
+  // oldSetRace(race: any) {
+  //   this.character.race = race;
+  //   // this.selectedSubrace = ''; <--- Não precisamos mais limpar isso manualmente aqui
 
-    // Chama o endpoint do Python: POST /ficha/{id}/raca/{race}
-    // Nota: Precisamos do ID do personagem (salvo no passo anterior)
-    console.log(this.character.id);
+  //   // Chama o endpoint do Python: POST /ficha/{id}/raca/{race}
+  //   // Nota: Precisamos do ID do personagem (salvo no passo anterior)
+  //   this.characterCreationService.sendRace(this.character.id, race)
+  //     .pipe(takeUntilDestroyed(this.destroyRef))
+  //     .subscribe(response => {
+
+  //     });
+  // }
+
+  // oldSetBackground(background: any) {
+  //   this.character.background = background;
+  //   this.characterCreationService.sendBackground(this.character.id, background)
+  //     .pipe(takeUntilDestroyed(this.destroyRef))
+  //     .subscribe(response => {
+
+  //     });
+  // }
+
+  setRace(race: string): void {
+    if (this.character.race !== '') return;
+    
+    this.character.race = race;
+    this.setLoading(true);
+
     this.characterCreationService.sendRace(this.character.id, race)
       .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe(response => {
-        // O Python retorna algo como: { message: "Ok", required_decision: [...] }
-        console.log('Resposta da Raça:', response);
-        
-        // Aqui conectamos a lógica de decisão
-        if (response.required_decision) {
-            this.choices = response.required_decision;
-            // Dica: Você precisará garantir que o HTML da Etapa 3 mostre 
-            // a lista de 'choices', assim como a Etapa 5 faz.
-        } else {
-            // Se veio vazio {}, significa que não tem mais pendências de raça
-            this.choices = []; 
+      .subscribe({
+        next: (response) => {
+          if (response) {
+            this.addDecision(response);
+          }
+          this.setLoading(false);
+        },
+        error: (error) => {
+          console.error('Erro ao adicionar raça:', error);
+          this.setLoading(false);
+        }
+      });
+  }
+
+  setBackground(bg: string): void {
+    if (this.character.background !== '') return;
+    
+    this.character.background = bg;
+    this.setLoading(true);
+
+    this.characterCreationService.sendBackground(this.character.id, bg)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (response) => {
+          if (response) {
+            this.addDecision(response);
+          }
+          this.setLoading(false);
+        },
+        error: (error) => {
+          console.error('Erro ao adicionar background:', error);
+          this.setLoading(false);
+        }
+      });
+  }
+
+  setClass(classe: string): void {
+    if (this.character.class !== '') return;
+    
+    this.character.class = classe;
+    this.setLoading(true);
+
+    this.characterCreationService.sendClass(this.character.id, classe, '0')
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (response) => {
+          if (response) {
+            this.addDecision(response);
+          }
+          this.setLoading(false);
+        },
+        error: (error) => {
+          console.error('Erro ao adicionar classe:', error);
+          this.setLoading(false);
         }
       });
   }
@@ -463,156 +537,8 @@ export class CharacterCreationComponent {
 
   //choices
 
-  getOptions(choiceIndex: number): string[] {
-    const choice = this.choices[choiceIndex];
-    if (Array.isArray(choice.opcoes)) {
-      return choice.opcoes;
-    }
-    return this.loadedOptions[choiceIndex] || [];
-  }
-
   isLoading(choiceIndex: number): boolean {
     return this.loading[choiceIndex] || false;
-  }
-
-  handleSelection(choiceIndex: number, optionIndex: number): void {
-    const choice = this.choices[choiceIndex];
-    const currentSelection = this.selections[choiceIndex] || [];
-    
-    let newSelection: number[];
-    
-    if (choice.n === 1) {
-      // Seleção única
-      newSelection = [optionIndex];
-    } else {
-      // Seleção múltipla
-      if (currentSelection.includes(optionIndex)) {
-        // Remove se já estava selecionado
-        newSelection = currentSelection.filter(i => i !== optionIndex);
-      } else if (currentSelection.length < choice.n) {
-        // Adiciona se não excedeu o limite
-        newSelection = [...currentSelection, optionIndex];
-      } else {
-        // Já atingiu o limite
-        return;
-      }
-    }
-
-    this.selections[choiceIndex] = newSelection;
-    this.updateActiveChoices();
-  }
-
-  calculateNextChoice(currentIndex: number, selectedOptionIndex: number): number | null {
-    const choice = this.choices[currentIndex];
-    const relacao = choice.relacao[selectedOptionIndex];
-    const offset = choice.offsets[selectedOptionIndex];
-    
-    // Se ambos são 0, não há próxima escolha
-    if (relacao === 0 && offset === 0) {
-      return null;
-    }
-    
-    const nextIndex = currentIndex + relacao + offset;
-    
-    console.log(`Escolha ${currentIndex} "${choice.label}", Opção ${selectedOptionIndex}:`);
-    console.log(`  relacao: ${relacao}, offset: ${offset}`);
-    console.log(`  cálculo: ${currentIndex} + ${relacao} + ${offset} = ${nextIndex}`);
-    
-    return nextIndex >= 0 && nextIndex < this.choices.length ? nextIndex : null;
-  }
-
-  updateActiveChoices(): void {
-    const newActiveChoices = new Set<number>();
-    
-    // Adiciona todas as escolhas que devem estar sempre ativas
-    // (aquelas que não dependem de nenhuma escolha anterior)
-    for (let i = 0; i < this.choices.length; i++) {
-      // Verifica se alguma escolha anterior pode desbloquear esta
-      let hasDependency = false;
-      
-      for (let j = 0; j < i; j++) {
-        const choice = this.choices[j];
-        // Se alguma opção da escolha anterior pode desbloquear esta escolha
-        for (let optIdx = 0; optIdx < choice.relacao.length; optIdx++) {
-          const nextIndex = j + choice.relacao[optIdx] + choice.offsets[optIdx];
-          if (nextIndex === i) {
-            hasDependency = true;
-            break;
-          }
-        }
-        if (hasDependency) break;
-      }
-      
-      // Se não tem dependência, está sempre ativa
-      if (!hasDependency) {
-        newActiveChoices.add(i);
-        console.log(`Escolha ${i} "${this.choices[i].label}" não tem dependências - sempre ativa`);
-      }
-    }
-    
-    // Agora processa as escolhas que desbloqueiam outras
-    let changed = true;
-    let iterations = 0;
-    const maxIterations = 100;
-    
-    while (changed && iterations < maxIterations) {
-      changed = false;
-      iterations++;
-      
-      for (let i = 0; i < this.choices.length; i++) {
-        if (!newActiveChoices.has(i)) continue;
-        
-        const selection = this.selections[i];
-        if (!selection || selection.length !== this.choices[i].n) continue;
-
-        selection.forEach(optionIndex => {
-          const nextIndex = this.calculateNextChoice(i, optionIndex);
-          if (nextIndex !== null && !newActiveChoices.has(nextIndex)) {
-            console.log(`Escolha ${i} "${this.choices[i].label}", opção ${optionIndex} -> desbloqueia escolha ${nextIndex} "${this.choices[nextIndex].label}"`);
-            newActiveChoices.add(nextIndex);
-            changed = true;
-          }
-        });
-      }
-    }
-
-    console.log('Escolhas ativas:', Array.from(newActiveChoices).sort((a,b) => a-b));
-    this.activeChoices = newActiveChoices;
-  }
-
-  isChoiceActive(index: number): boolean {
-    return this.activeChoices.has(index);
-  }
-
-  isChoiceComplete(index: number): boolean {
-    const selection = this.selections[index];
-    return selection ? selection.length === this.choices[index].n : false;
-  }
-
-  isOptionSelected(choiceIndex: number, optionIndex: number): boolean {
-    return this.selections[choiceIndex]?.includes(optionIndex) || false;
-  }
-
-  getSelectionCount(choiceIndex: number): number {
-    return this.selections[choiceIndex]?.length || 0;
-  }
-
-  getSelectionSummary(): Array<{ label: string; options: string[] }> {
-    return Object.entries(this.selections)
-      .filter(([, sel]) => sel.length > 0)
-      .map(([idx, sel]) => {
-        const choice = this.choices[parseInt(idx)];
-        const options = this.getOptions(parseInt(idx));
-        const selectedOptions = sel.map(i => options[i]);
-        return {
-          label: choice.label,
-          options: selectedOptions
-        };
-      });
-  }
-
-  getActiveChoicesArray(): number[] {
-    return Array.from(this.activeChoices).sort((a, b) => a - b);
   }
 
   saveCharacter() {
@@ -627,16 +553,151 @@ export class CharacterCreationComponent {
           carisma: this.character.attributes.CHA
       }
     }
+
+    this.setLoading(true);
     
     this.characterCreationService.createCharacter(ficha)
     .pipe(takeUntilDestroyed(this.destroyRef))
     .subscribe(response => {
       console.log('Ficha criada com sucesso:', response);
+      this.setLoading(false);
       
-      this.character.id = response.id; 
+      this.character.id = response.id;
     });
   }
+
+  getNextChoices(payload: any) {
+    this.characterCreationService.getNextChoices(this.character.id, payload)
+    .pipe(takeUntilDestroyed(this.destroyRef))
+    .subscribe(response => {
+      console.log(response);
+    });
+  }
+
+
+  //DECISIONS SECTION
+
+  addDecision(apiResponse: ApiResponse): void {
+    if (apiResponse.required_decision && apiResponse.required_decision.label) {
+      const decision: Decision = {
+        label: apiResponse.required_decision.label,
+        options: apiResponse.required_decision.options,
+        n: apiResponse.required_decision.n,
+        selectedOptions: [],
+        isComplete: false
+      };
+      this.decisionsArray.push(decision);
+    }
+  }
+
+  // Verifica se uma opção está selecionada
+  isDecisionOptionSelected(decisionIndex: number, option: string): boolean {
+    if (!this.decisionsArray[decisionIndex]) return false;
+    return this.decisionsArray[decisionIndex].selectedOptions.includes(option);
+  }
+
+  // Seleciona/deseleciona uma opção
+  toggleDecisionOption(decisionIndex: number, option: string): void {
+    const decision = this.decisionsArray[decisionIndex];
+    if (!decision) return;
+
+    const optionIndex = decision.selectedOptions.indexOf(option);
+
+    if (optionIndex > -1) {
+      // Remove a opção
+      decision.selectedOptions.splice(optionIndex, 1);
+      decision.isComplete = false;
+    } else {
+      // Adiciona a opção
+      if (decision.selectedOptions.length < decision.n) {
+        decision.selectedOptions.push(option);
+        
+        // Marca como completa se atingiu o número necessário
+        if (decision.selectedOptions.length === decision.n) {
+          decision.isComplete = true;
+          // Faz a chamada automática para o backend
+          this.submitDecisionAndLoadNext(decisionIndex);
+        }
+      } else if (decision.n === 1) {
+        // Se só pode escolher 1, substitui a seleção anterior
+        decision.selectedOptions = [option];
+        decision.isComplete = true;
+        this.submitDecisionAndLoadNext(decisionIndex);
+      }
+    }
+  }
+
+  // Envia a decisão e carrega a próxima se necessário
+submitDecisionAndLoadNext(decisionIndex: number): void {
+  const decision = this.decisionsArray[decisionIndex];
+  if (!decision.isComplete) return;
+
+  this.setLoading(true);
+
+  const payload = {
+    character_id: this.character.id,
+    decision: decision.label,
+    selected_options: decision.selectedOptions
+  };
+
+  this.characterCreationService.getNextChoices(this.character.id, payload)
+    .pipe(takeUntilDestroyed(this.destroyRef))
+    .subscribe({
+      next: (response) => {
+        console.log(response);
+
+        // Se houver uma nova decisão, adiciona ao array
+        if (response && response.required_decision && response.required_decision.label) {
+          this.addDecision(response);
+          this.currentDecisionIndex = this.decisionsArray.length - 1;
+        } else {
+          // Se não houver mais decisões, todas foram completadas
+          console.log('Todas as decisões foram completadas!');
+        }
+        
+        this.setLoading(false);
+      },
+      error: (error) => {
+        console.error('Erro ao enviar decisão:', error);
+        alert('Erro ao processar sua escolha. Tente novamente.');
+        
+        // Reverte a decisão em caso de erro
+        decision.isComplete = false;
+        decision.selectedOptions = [];
+        
+        this.setLoading(false);
+      }
+    });
 }
+
+  // Verifica se a decisão está completa
+  isDecisionComplete(decisionIndex: number): boolean {
+    const decision = this.decisionsArray[decisionIndex];
+    return decision ? decision.isComplete : false;
+  }
+
+  // Conta quantas opções foram selecionadas
+  getSelectedCount(decisionIndex: number): number {
+    const decision = this.decisionsArray[decisionIndex];
+    return decision ? decision.selectedOptions.length : 0;
+  }
+
+  // Limpa o array de decisões (ao mudar de step)
+  clearDecisions(): void {
+    this.decisionsArray = [];
+    this.currentDecisionIndex = 0;
+  }
+
+  // Obtém resumo das decisões para exibir
+  getDecisionsSummary(): string[] {
+    return this.decisionsArray.map(d => 
+      `${d.label}: ${d.selectedOptions.join(', ')}`
+    );
+  }
+
+  
+}
+
 
 interface ClassInfo {
   skills: string[];

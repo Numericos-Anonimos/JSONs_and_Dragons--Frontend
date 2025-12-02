@@ -9,50 +9,44 @@ import { CriarFichaRequest } from "../models/criar-ficha-request.model";
 export class CharacterCreationService {
   private baseUrl = `${environment.apiUrl}/criar`;
 
+  private buildHeaders(): HttpHeaders {
+    const token = this.authService.getToken();
+    const headers: any = { 'Content-Type': 'application/json' };
+    
+    if (token) {
+      headers['Authorization'] = `Bearer ${token}`;
+    }
+
+    return new HttpHeaders(headers);
+  }
+
   constructor(
     private http: HttpClient,
-    private authService: AuthService) {}
+    private authService: AuthService
+  ) {}
 
-  sendClass(classe: string, level: string): Observable<any> {
-    const url = `${this.baseUrl}/ficha/classe/${classe}/${level}`;
-    return this.http.get<any>(url);
+  sendClass(characterId: string, classe: string, level: string): Observable<any> {
+    const url = `${this.baseUrl}/ficha/${characterId}/classe/${classe}/${level}`;
+    return this.http.post(url, {}, { headers: this.buildHeaders() });
   }
 
-  sendRace(id: string, race: string): Observable<any> {
-    const url = `${this.baseUrl}/ficha/${id}/raca/${race}`;
-    return this.http.post<any>(url, {});
+  sendRace(characterId: string, race: string): Observable<any> {
+    const url = `${this.baseUrl}/ficha/${characterId}/raca/${race}`;
+    return this.http.post(url, {}, { headers: this.buildHeaders() });
   }
 
-createCharacter(ficha: CriarFichaRequest): Observable<any> {
+  sendBackground(characterId: string, background: string): Observable<any> {
+    const url = `${this.baseUrl}/ficha/${characterId}/background/${background}`;
+    return this.http.post(url, {}, { headers: this.buildHeaders() });
+  }
+
+  createCharacter(ficha: CriarFichaRequest): Observable<any> {
     const url = `${this.baseUrl}/ficha/`;
-
-    const token = this.authService.getToken();
-    const headers = token ? new HttpHeaders({
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${token}`
-    }) : new HttpHeaders({
-      'Content-Type': 'application/json'
-    });
-
-    return this.http.post<any>(url, ficha, { headers });
+    return this.http.post(url, ficha, { headers: this.buildHeaders() });
   }
 
-  // loadOptionsFromAPI(choiceIndex: number, query: string): void {
-  //   this.loading[choiceIndex] = true;
-    
-  //   // Substitua pela sua URL da API
-  //   this.http.get<string[]>(`api/${query}`).subscribe({
-  //     next: (data) => {
-  //       this.loadedOptions[choiceIndex] = data;
-  //       this.loading[choiceIndex] = false;
-  //     },
-  //     error: (err) => {
-  //       console.error(`Erro ao carregar opções para ${query}:`, err);
-  //       // Mock para desenvolvimento
-  //       this.loadedOptions[choiceIndex] = ['Espada Longa', 'Machado de Batalha', 'Lança', 'Martelo de Guerra'];
-  //       this.loading[choiceIndex] = false;
-  //     }
-  //   });
-  // }
-
+  getNextChoices(characterId: string, payload: any): Observable<any> {
+    const url = `${this.baseUrl}/ficha/${characterId}/next`;
+    return this.http.post(url, { decision: payload }, { headers: this.buildHeaders() });
+  }
 }

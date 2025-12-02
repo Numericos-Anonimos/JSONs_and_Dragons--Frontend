@@ -11,7 +11,6 @@ import { FormsModule } from '@angular/forms';
 import { CharacterCreationService } from '../../shared/services/character-creation-service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { BaseDataService } from '../../shared/services/base-data-service';
-import { Choice } from '../../shared/models/choice.model';
 import { HttpClient } from "@angular/common/http";
 import { ActivatedRoute } from '@angular/router';
 
@@ -31,8 +30,6 @@ export class HomebrewCreationComponent {
   ) {}
 
   private destroyRef = inject(DestroyRef);
-
-  choices: Choice[] = [];
   selections: { [key: number]: number[] } = {};
   activeChoices = new Set<number>([0]);
   loadedOptions: { [key: number]: string[] } = {};

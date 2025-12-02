@@ -27,7 +27,6 @@ createCharacter(ficha: CriarFichaRequest): Observable<any> {
     const url = `${this.baseUrl}/ficha/`;
 
     const token = this.authService.getToken();
-
     const headers = token ? new HttpHeaders({
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${token}`

@@ -433,6 +433,7 @@ export class CharacterCreationComponent {
 
     // Chama o endpoint do Python: POST /ficha/{id}/raca/{race}
     // Nota: Precisamos do ID do personagem (salvo no passo anterior)
+    console.log(this.character.id);
     this.characterCreationService.sendRace(this.character.id, race)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(response => {
@@ -614,16 +615,16 @@ export class CharacterCreationComponent {
     return Array.from(this.activeChoices).sort((a, b) => a - b);
   }
 
-  saveCharacter() { // Parece que eu quebrei isso
-    const ficha: CriarFichaRequest = {
+  saveCharacter() {
+    const ficha: any = {
       nome: this.character.name,
       atributos: {
-          forca: this.character.attributes.STR,
-          destreza: this.character.attributes.DEX,
-          constituicao: this.character.attributes.CON,
-          inteligencia: this.character.attributes.INT,
-          sabedoria: this.character.attributes.WIS,
-          carisma: this.character.attributes.CHA
+          str: this.character.attributes.STR,
+          dex: this.character.attributes.DEX,
+          con: this.character.attributes.CON,
+          int: this.character.attributes.INT,
+          wis: this.character.attributes.WIS,
+          cha: this.character.attributes.CHA
       }
     }
     

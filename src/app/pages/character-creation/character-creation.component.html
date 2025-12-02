@@ -346,11 +346,11 @@
               <i class="bi bi-book"></i> Escolha o Antecedente
             </h3>
             <div class="row g-3">
-              <div *ngIf="races.length == 0" class="text-center py-4">
+              <div *ngIf="backgrounds.length == 0" class="text-center py-4">
                 <div class="spinner-border text-primary" role="status">
-                  <span class="visually-hidden">Carregando raças...</span>
+                  <span class="visually-hidden">Carregando antecedentes...</span>
                 </div>
-                <p class="mt-2 text-muted">Carregando raças...</p>
+                <p class="mt-2 text-muted">Carregando antecedentes...</p>
               </div>
               <div class="col-md-4" *ngFor="let bg of backgrounds">
                 <div class="card h-100" 

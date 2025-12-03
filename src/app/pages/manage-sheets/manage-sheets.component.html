@@ -76,7 +76,7 @@
                 <i [class]="'bi ' + character.avatar"></i>
               </div>
               <div class="character-level">
-                Nível {{ character.level }}
+                Nível {{ character.totalLevel }}
               </div>
             </div>
             
@@ -87,9 +87,9 @@
                   <i class="bi bi-person-fill me-1"></i>
                   {{ character.race }}
                 </span>
-                <span class="info-badge">
+                <span *ngFor="let classe of character.classes" class="info-badge">
                   <i class="bi bi-lightning-fill me-1"></i>
-                  {{ character.class }}
+                  {{ classe.class + " - Level " + classe.level  }}
                 </span>
               </div>
             </div>

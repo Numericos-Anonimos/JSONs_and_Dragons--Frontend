@@ -5,9 +5,8 @@ export interface Character {
   id: string;
   name: string;
   race: string;
-  class: string;
-  subclass: string;
-  level: number;
+  classes: ClassLevel[];
+  totalLevel: number;
   background?: string;
   alignment?: string;
   experience?: number;
@@ -75,6 +74,12 @@ export interface Attack {
   damage: string;
 }
 
+export interface ClassLevel {
+  class: string;
+  subclass?: string;
+  level: number;
+}
+
 
 
 @Component({
@@ -86,4 +91,8 @@ export interface Attack {
 export class CharacterSheetComponent {
   @Input() character!: Character;
   @Input() isWide: boolean = false;
+
+  get characterClasses(): string {
+    return this.character.classes.flatMap(c => c.class).join(', ');
+  }
 }

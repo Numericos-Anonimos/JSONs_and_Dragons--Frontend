@@ -103,9 +103,9 @@
                       
                       <div class="text-center mx-3">
                         <div class="h2 mb-0">{{character.attributes[ability]}}</div>
-                        <small class="text-muted" *ngIf="getRaceBonus(ability) > 0">
+                        <!-- <small class="text-muted" *ngIf="getRaceBonus(ability) > 0">
                           +{{getRaceBonus(ability)}} racial
-                        </small>
+                        </small> -->
                         <div>
                           <span class="badge bg-info">
                             Modificador: {{getAbilityModifier(character.attributes[ability]) >= 0 ? '+' : ''}}{{getAbilityModifier(character.attributes[ability])}}
@@ -237,12 +237,12 @@
               </div>
               <div class="col-md-4" *ngFor="let className of classes">
                 <div class="card h-100" 
-                     [class.border-primary]="character.class === className"
-                     [class.bg-light]="character.class === className"
+                     [class.disabled]="decisionsArray.length > 0"
                      (click)="setClass(className)"
                      style="cursor: pointer;">
                   <div class="card-body text-center">
                     <h5 class="card-title">{{className}}</h5>
+                    <p *ngIf="decisionsArray.length == 0" class="card-subtitle">{{"Nível " + findClassNextLevel(className)}}</p>
                   </div>
                 </div>
               </div>
@@ -373,8 +373,8 @@
                   <div class="card-body">
                     <p><strong>Name:</strong> {{character.name}}</p>
                     <p><strong>Race:</strong> {{selectedSubrace}}</p>
-                    <p><strong>Class:</strong> {{character.class}}</p>
-                    <p><strong>Level:</strong> {{character.level}}</p>
+                    <!-- <p><strong>Class:</strong> {{character.class}}</p> -->
+                    <p><strong>Level:</strong> {{character.totalLevel}}</p>
                     <p><strong>Background:</strong> {{character.background}}</p>
                     <p class="mb-0"><strong>Alignment:</strong> {{character.alignment}}</p>
                   </div>
@@ -538,8 +538,17 @@
                 </li>
               </ul>
             </div>
-          </div>
+          
 
+          <div *ngIf="step === 5 && showAddLevelButton">
+            <div class="card h-100" 
+                (click)="addNewLevel()"
+                style="cursor: pointer;">
+            <div class="card-body text-center">
+              <h5 class="card-title"><i class="bi bi-chevron-double-up"></i> Subir de nível (opcional)</h5>
+            </div>
+          </div>
+          </div>
         </div>
 
         <!-- Navigation Footer -->

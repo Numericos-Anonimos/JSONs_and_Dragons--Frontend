@@ -17,6 +17,7 @@ import { CriarFichaRequest } from '../../shared/models/criar-ficha-request.model
 import { Atributos } from '../../shared/models/atributos.model';
 import { Decision } from '../../shared/models/decision.model';
 import { ApiResponse } from '../../shared/models/api-response.model';
+import { ClassLevel } from '../../shared/components/sheets/character-sheet/character-sheet.component';
 
 @Component({
   selector: 'app-character-creation',
@@ -48,6 +49,8 @@ export class CharacterCreationComponent {
   totalSteps: number = 8;
   pointBuyPoints: number = 27;
   selectedSubrace: string = '';
+
+  showAddLevelButton: boolean = false;
 
   character: Character = this.initializeCharacter();
 
@@ -100,9 +103,8 @@ export class CharacterCreationComponent {
       id: '',
       name: '',
       race: '',
-      class: '',
-      subclass: '',
-      level: 1,
+      classes: [],
+      totalLevel: 0,
       background: '',
       alignment: '',
       experience: 0,
@@ -188,16 +190,6 @@ export class CharacterCreationComponent {
     .subscribe(response => {
       this.classes = response;
     });
-  }
-
-  getSubclasses() {
-    if (this.character.class) {
-      this.baseDataService.getSubclasses(this.character.class)
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe(response => {
-        this.subclasses = response;
-      });
-    }
   }
 
   getBackgrounds() {
@@ -344,7 +336,8 @@ export class CharacterCreationComponent {
       if (this.step === 4) {
         // this.getClassChoices();
       } 
-      if (this.step === 5 && this.character.class) {
+      if (this.step === 5) {
+        this.loadCharacterToView();
       } 
       // if (this.step === 6) {
       //   this.updateDerivedStats();
@@ -368,38 +361,13 @@ export class CharacterCreationComponent {
       case 1: return this.character.name.trim().length > 0;
       case 2: return this.calculateUsedPoints() === this.pointBuyPoints;
       case 3: return this.character.race.length > 0;
-      case 4: return this.character.class.length > 0 && this.character.subclass.length > 0;
+      case 4: return this.character.background != null && this.character.background.length > 0;
       // case 5: return this.getSelectedSkillsCount() === this.getSkillCount();
       case 6: return this.character.background !== undefined && this.character.background.length > 0;
       case 7: return this.character.alignment !== undefined && this.character.alignment.length > 0;
       case 8: return true;
       default: return true;
     }
-  }
-
-  getRaceBonus(ability: string): number {
-    // This is for display purposes only - showing what bonus will be applied
-    const bonuses: { [key: string]: { [key: string]: number } } = {
-      'Hill Dwarf': { CON: 2, WIS: 1 },
-      'Mountain Dwarf': { STR: 2, CON: 2 },
-      'High Elf': { DEX: 2, INT: 1 },
-      'Wood Elf': { DEX: 2, WIS: 1 },
-      'Dark Elf (Drow)': { DEX: 2, CHA: 1 },
-      'Lightfoot': { DEX: 2, CHA: 1 },
-      'Stout': { DEX: 2, CON: 1 },
-      'Dragonborn': { STR: 2, CHA: 1 },
-      'Forest Gnome': { INT: 2, DEX: 1 },
-      'Rock Gnome': { INT: 2, CON: 1 },
-      'Half-Elf': { CHA: 2 },
-      'Half-Orc': { STR: 2, CON: 1 },
-      'Tiefling': { INT: 1, CHA: 2 }
-    };
-
-    if (this.selectedSubrace === 'Standard' && this.character.race === 'Human') {
-      return 1;
-    }
-
-    return bonuses[this.selectedSubrace]?.[ability] || 0;
   }
 
   downloadCharacter(): void {
@@ -435,6 +403,10 @@ export class CharacterCreationComponent {
 
   getSkillKeys(): string[] {
     return this.character.skills;
+  }
+
+  loadCharacterToView() {
+
   }
 
   // oldSetRace(race: any) {
@@ -504,12 +476,23 @@ export class CharacterCreationComponent {
   }
 
   setClass(classe: string): void {
-    if (this.character.class !== '') return;
-    
-    this.character.class = classe;
+    const existingClass = this.character.classes.find(c => c.class == classe);
+    let classLevel = 0;
+    if (existingClass == null) {
+      classLevel = this.character.classes.length > 0 ? 1 : 0;
+      const newClass: ClassLevel = {class: classe, level: classLevel};
+      this.character.classes.push(newClass);
+    }
+    else {
+      existingClass.level++;
+      classLevel = existingClass.level;
+    }
+
+    this.character.totalLevel++;
+
     this.setLoading(true);
 
-    this.characterCreationService.sendClass(this.character.id, classe, '0')
+    this.characterCreationService.sendClass(this.character.id, classe, classLevel)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (response) => {
@@ -523,6 +506,36 @@ export class CharacterCreationComponent {
           this.setLoading(false);
         }
       });
+  }
+
+  loadClassLevelOne(classe: string) {
+    const existingClass = this.character.classes.find(c => c.class == classe);
+    if (existingClass) {
+      existingClass.level = 1;
+    }
+    else throw Error('Error while updating class level (level 1)');
+
+    this.setLoading(true);
+
+    this.characterCreationService.sendClass(this.character.id, classe, 1)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (response) => {
+          if (response) {
+            this.addDecision(response);
+          }
+          this.setLoading(false);
+        },
+        error: (error) => {
+          console.error('Erro ao adicionar classe:', error);
+          this.setLoading(false);
+        }
+      });
+  }
+
+  addNewLevel() {
+    this.clearDecisions();
+    this.showAddLevelButton = false;
   }
 
   onFilesSelected(event: Event) {
@@ -562,14 +575,6 @@ export class CharacterCreationComponent {
       this.setLoading(false);
       
       this.character.id = response.id;
-    });
-  }
-
-  getNextChoices(payload: any) {
-    this.characterCreationService.getNextChoices(this.character.id, payload)
-    .pipe(takeUntilDestroyed(this.destroyRef))
-    .subscribe(response => {
-      console.log(response);
     });
   }
 
@@ -651,7 +656,12 @@ submitDecisionAndLoadNext(decisionIndex: number): void {
           this.addDecision(response);
           this.currentDecisionIndex = this.decisionsArray.length - 1;
         } else {
-          // Se não houver mais decisões, todas foram completadas
+          if (this.step === 5 && this.character.classes.length == 1 && this.character.classes[0].level == 0) {
+            this.loadClassLevelOne(this.character.classes[0].class);
+          }
+          if (this.step === 5) {
+            this.showAddLevelButton = true;
+          }
           console.log('Todas as decisões foram completadas!');
         }
         
@@ -695,6 +705,10 @@ submitDecisionAndLoadNext(decisionIndex: number): void {
     );
   }
 
+  findClassNextLevel(classe: string) {
+    const existingClass = this.character.classes.find(c => c.class == classe);
+    return existingClass ? existingClass.level + 1 : 1;
+  }
   
 }
 

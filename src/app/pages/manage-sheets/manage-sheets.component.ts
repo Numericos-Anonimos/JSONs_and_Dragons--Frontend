@@ -116,9 +116,10 @@ private lerp(start: number, end: number, smoothing: number = 0.15): number {
         id: '1',
         name: "Thorin Martelo de Pedra",
         race: "Anão",
-        class: "Guerreiro",
-        subclass: "Campeão",
-        level: 12,
+        classes: [
+          { class: "Guerreiro", subclass: "Campeão", level: 12 }
+        ],
+        totalLevel: 12,
         background: "Soldado",
         alignment: "Leal e Bom",
         experience: 85000,
@@ -162,9 +163,10 @@ private lerp(start: number, end: number, smoothing: number = 0.15): number {
         id: '2',
         name: "Elara Vento Prateado",
         race: "Elfo",
-        class: "Mago",
-        subclass: "Evocadora",
-        level: 10,
+        classes: [
+          { class: "Mago", subclass: "Evocadora", level: 10 }
+        ],
+        totalLevel: 10,
         background: "Sábia",
         alignment: "Neutra e Boa",
         experience: 48000,
@@ -208,9 +210,10 @@ private lerp(start: number, end: number, smoothing: number = 0.15): number {
         id: '3',
         name: "Kael Sombra Noturna",
         race: "Meio-Elfo",
-        class: "Ladino",
-        subclass: "Assassino",
-        level: 8,
+        classes: [
+          { class: "Ladino", subclass: "Assassino", level: 8 }
+        ],
+        totalLevel: 8,
         background: "Criminoso",
         alignment: "Caótico Neutro",
         experience: 24000,
@@ -256,9 +259,10 @@ private lerp(start: number, end: number, smoothing: number = 0.15): number {
         id: '4',
         name: "Aria Coração Valente",
         race: "Humano",
-        class: "Paladino",
-        subclass: "Juramento da Devoção",
-        level: 11,
+        classes: [
+          { class: "Paladino", subclass: "Juramento da Devoção", level: 11 }
+        ],
+        totalLevel: 11,
         background: "Herói do Povo",
         alignment: "Leal e Bom",
         experience: 65000,
@@ -303,9 +307,10 @@ private lerp(start: number, end: number, smoothing: number = 0.15): number {
         id: '5',
         name: "Grimm Pata Selvagem",
         race: "Meio-Orc",
-        class: "Druida",
-        subclass: "Círculo da Lua",
-        level: 9,
+        classes: [
+          { class: "Druida", subclass: "Círculo da Lua", level: 9 }
+        ],
+        totalLevel: 9,
         background: "Eremita",
         alignment: "Neutro",
         experience: 34000,
@@ -349,9 +354,10 @@ private lerp(start: number, end: number, smoothing: number = 0.15): number {
         id: '6',
         name: "Luna Melodia Arcana",
         race: "Halfling",
-        class: "Bardo",
-        subclass: "Colégio da Sabedoria",
-        level: 7,
+        classes: [
+          { class: "Bardo", subclass: "Colégio da Sabedoria", level: 7 }
+        ],
+        totalLevel: 7,
         background: "Artista",
         alignment: "Caótica Boa",
         experience: 18000,
@@ -398,10 +404,16 @@ private lerp(start: number, end: number, smoothing: number = 0.15): number {
 
   filterCharacters(): void {
     const term = this.searchTerm.toLowerCase();
+
     this.filteredCharacters = this.characters.filter(char =>
       char.name.toLowerCase().includes(term) ||
-      char.class.toLowerCase().includes(term) ||
-      char.race.toLowerCase().includes(term)
+      char.race.toLowerCase().includes(term) ||
+
+      // check class names
+      char.classes.some(c => c.class.toLowerCase().includes(term)) ||
+
+      // check subclass names (optional fields)
+      char.classes.some(c => c.subclass?.toLowerCase().includes(term))
     );
   }
 

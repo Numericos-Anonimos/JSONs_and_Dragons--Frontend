@@ -25,7 +25,7 @@ export class CharacterCreationService {
     private authService: AuthService
   ) {}
 
-  sendClass(characterId: string, classe: string, level: string): Observable<any> {
+  sendClass(characterId: string, classe: string, level: number): Observable<any> {
     const url = `${this.baseUrl}/ficha/${characterId}/classe/${classe}/${level}`;
     return this.http.post(url, {}, { headers: this.buildHeaders() });
   }
@@ -47,6 +47,6 @@ export class CharacterCreationService {
 
   getNextChoices(characterId: string, payload: any): Observable<any> {
     const url = `${this.baseUrl}/ficha/${characterId}/next`;
-    return this.http.post(url, { decision: payload }, { headers: this.buildHeaders() });
+    return this.http.post(url, payload, { headers: this.buildHeaders() });
   }
 }

@@ -239,7 +239,7 @@
                 <div class="card h-100" 
                      [class.border-primary]="character.class === className"
                      [class.bg-light]="character.class === className"
-                     (click)="selectClass(className)"
+                     (click)="setClass(className)"
                      style="cursor: pointer;">
                   <div class="card-body text-center">
                     <h5 class="card-title">{{className}}</h5>
@@ -248,7 +248,7 @@
               </div>
             </div>
 
-            <div class="mb-4" *ngIf="character.class">
+            <!-- <div class="mb-4" *ngIf="character.class">
               <label class="form-label">Sub-classe</label>
               <div *ngIf="subclasses.length == 0" class="text-center py-4">
                 <div class="spinner-border text-primary" role="status">
@@ -269,7 +269,7 @@
                   </div>
                 </div>
               </div>
-            </div>
+            </div> -->
 
 
           </div>

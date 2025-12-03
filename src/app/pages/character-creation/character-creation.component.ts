@@ -306,27 +306,26 @@ export class CharacterCreationComponent {
     return speedMap[this.character.race] || '30 ft';
   }
 
-  selectClass(className: any): void {
-    this.character.class = className;
-    const classInfo = this.classes[className];
-    this.getSubclasses();
+  // selectClass(className: any): void {
+  //   this.character.class = className;
+  //   const classInfo = this.classes[className];
     
-    // Reset skills
-    Object.keys(this.character.skills).forEach(skill => {
-      this.character.skills = [];
-    });
+  //   // Reset skills
+  //   Object.keys(this.character.skills).forEach(skill => {
+  //     this.character.skills = [];
+  //   });
     
-    // Set saving throws
-    // Object.keys(this.character.savingThrows).forEach(ability => {
-    //   this.character.savingThrows[ability as keyof SavingThrows] = 
-    //     classInfo.savingThrows.includes(ability);
-    // });
+  //   // Set saving throws
+  //   // Object.keys(this.character.savingThrows).forEach(ability => {
+  //   //   this.character.savingThrows[ability as keyof SavingThrows] = 
+  //   //     classInfo.savingThrows.includes(ability);
+  //   // });
     
-    // Set equipment
-    // this.character.equipment = [...classInfo.equipment];
+  //   // Set equipment
+  //   // this.character.equipment = [...classInfo.equipment];
     
-    this.updateDerivedStats();
-  }
+  //   this.updateDerivedStats();
+  // }
 
   nextStep(): void {
     if (this.canProceed()) {
@@ -342,7 +341,7 @@ export class CharacterCreationComponent {
       if (this.step === 3) {
         // this.sendBackground();
       }
-      if (this.step === 4 && this.character.class) {
+      if (this.step === 4) {
         // this.getClassChoices();
       } 
       if (this.step === 5 && this.character.class) {
@@ -637,7 +636,7 @@ submitDecisionAndLoadNext(decisionIndex: number): void {
   const payload = {
     character_id: this.character.id,
     decision: decision.label,
-    selected_options: decision.selectedOptions
+    selected_options: decision.selectedOptions.length == 1 ? decision.selectedOptions[0] : decision.selectedOptions
   };
 
   this.characterCreationService.getNextChoices(this.character.id, payload)

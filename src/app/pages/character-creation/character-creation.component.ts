@@ -634,9 +634,10 @@ submitDecisionAndLoadNext(decisionIndex: number): void {
   this.setLoading(true);
 
   const payload = {
-    character_id: this.character.id,
-    decision: decision.label,
-    selected_options: decision.selectedOptions.length == 1 ? decision.selectedOptions[0] : decision.selectedOptions
+    // character_id: this.character.id,
+    // decision: decision.label,
+    // selected_options: decision.selectedOptions.length == 1 ? decision.selectedOptions[0] : decision.selectedOptions
+    decision: decision.selectedOptions.length == 1 ? decision.selectedOptions[0] : decision.selectedOptions
   };
 
   this.characterCreationService.getNextChoices(this.character.id, payload)

@@ -247,136 +247,33 @@
                 </div>
               </div>
             </div>
-
-            <!-- <div class="mb-4" *ngIf="character.class">
-              <label class="form-label">Sub-classe</label>
-              <div *ngIf="subclasses.length == 0" class="text-center py-4">
-                <div class="spinner-border text-primary" role="status">
-                  <span class="visually-hidden">Carregando sub-classes...</span>
-                </div>
-                <p class="mt-2 text-muted">Carregando sub-classes...</p>
-              </div>
-              <div class="row g-3">
-                <div class="col-md-4" *ngFor="let subclass of subclasses">
-                  <div class="card h-100" 
-                       [class.border-primary]="character.subclass === subclass"
-                       [class.bg-light]="character.subclass === subclass"
-                       (click)="character.subclass = subclass"
-                       style="cursor: pointer;">
-                    <div class="card-body text-center">
-                      <h6 class="card-title">{{subclass}}</h6>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div> -->
-
-
           </div>
 
-          <!-- Step 7: Alignment -->
-          <div *ngIf="step === 7">
+          <!-- Step 6: Review & Finalize -->
+          <div *ngIf="step === 6">
             <h3 class="card-title mb-4">
-              <i class="bi bi-compass"></i> Escolha o Alinhamento
+              <i class="bi bi-check-circle"></i> Personagem pronto!
             </h3>
-            <div class="row g-3">
-              <div class="col-md-4" *ngFor="let align of alignments">
-                <div class="card h-100" 
-                     [class.border-primary]="character.alignment === align"
-                     [class.bg-light]="character.alignment === align"
-                     (click)="character.alignment = align"
-                     style="cursor: pointer;">
-                  <div class="card-body text-center">
-                    <h6 class="card-title">{{align}}</h6>
-                  </div>
+
+            <div class="row mb-4" *ngIf="characterResponse">
+              <div class="phb">
+                <div class="page">
+                    <app-character-sheet
+                    [character]="characterResponse"
+                    [isWide]="true">
+                    </app-character-sheet>
                 </div>
               </div>
-            </div>
-          </div>
-
-          <!-- Step 8: Equipment & Features -->
-          <div *ngIf="step === 8">
-            <h3 class="card-title mb-4">
-              <i class="bi bi-backpack"></i> Equipamentos & Características
-            </h3>
-
-            <div class="mb-4">
-              <h5>Equipamentos Iniciais</h5>
-              <ul class="list-group">
-                <li class="list-group-item" *ngFor="let item of character.equipment">
-                  {{item}}
-                </li>
-              </ul>
-            </div>
-
-            <div class="mb-4">
-              <label class="form-label">Adicionar Equipamento Personalizado</label>
-              <div class="input-group">
-                <input 
-                  type="text" 
-                  class="form-control" 
-                  placeholder="Digite o nome do equipamento"
-                  #customEquipment>
-                <button 
-                  class="btn btn-outline-primary" 
-                  (click)="character.equipment.push(customEquipment.value); customEquipment.value = ''">
-                  Adicionar
-                </button>
-              </div>
-            </div>
-
-            <div class="mb-4">
-              <label class="form-label">Características & Traços (Opcional)</label>
-              <div class="input-group mb-2">
-                <input 
-                  type="text" 
-                  class="form-control" 
-                  placeholder="Digite uma característica ou traço"
-                  #customFeature>
-                <button 
-                  class="btn btn-outline-primary" 
-                  (click)="character.features.push(customFeature.value); customFeature.value = ''">
-                  Adicionar
-                </button>
-              </div>
-              <ul class="list-group" *ngIf="character.features.length > 0">
-                <li class="list-group-item" *ngFor="let feature of character.features; let i = index">
-                  {{feature}}
-                  <button class="btn btn-sm btn-outline-danger float-end" (click)="character.features.splice(i, 1)">
-                    <i class="bi bi-trash"></i>
-                  </button>
-                </li>
-              </ul>
-            </div>
-          </div>
-
-          <!-- Step 9: Review & Finalize -->
-          <div *ngIf="step === 9">
-            <h3 class="card-title mb-4">
-              <i class="bi bi-check-circle"></i> Review Your Character
-            </h3>
-
-            <div class="row mb-4">
-                <div class="phb">
-                    <div class="page">
-                        <app-character-sheet
-                        [character]="character"
-                        [isWide]="true">
-                        </app-character-sheet>
-                    </div>
-                </div>
               <div class="col-md-6">
                 <div class="card mb-3">
                   <div class="card-header bg-primary text-white">
                     <h5 class="mb-0">Basic Information</h5>
                   </div>
                   <div class="card-body">
-                    <p><strong>Name:</strong> {{character.name}}</p>
-                    <p><strong>Race:</strong> {{selectedSubrace}}</p>
-                    <!-- <p><strong>Class:</strong> {{character.class}}</p> -->
-                    <p><strong>Level:</strong> {{character.totalLevel}}</p>
-                    <p><strong>Background:</strong> {{character.background}}</p>
-                    <p class="mb-0"><strong>Alignment:</strong> {{character.alignment}}</p>
+                    <p><strong>Name:</strong> {{ characterResponse.header.name }}</p>
+                    <p><strong>Race:</strong> {{ characterResponse.header.race }}</p>
+                    <p><strong>Class:</strong> {{ characterResponse.header.class_level }}</p>
+                    <p><strong>Background:</strong> {{ characterResponse.header.background }}</p>
                   </div>
                 </div>
 
@@ -385,15 +282,22 @@
                     <h5 class="mb-0">Combat Stats</h5>
                   </div>
                   <div class="card-body">
-                    <p><strong>Armor Class:</strong> {{character.armorClass}}</p>
-                    <p><strong>Initiative:</strong> {{character.initiative >= 0 ? '+' : ''}}{{character.initiative}}</p>
-                    <p><strong>Speed:</strong> {{character.speed}}</p>
-                    <p><strong>Hit Points:</strong> {{character.hitPoints.max}}</p>
-                    <p class="mb-0"><strong>Hit Dice:</strong> {{character.hitDice}}</p>
+                    <p><strong>Armor Class:</strong> {{ characterResponse.combat.ac }}</p>
+                    <p>
+                      <strong>Initiative:</strong>
+                      {{ characterResponse.combat.initiative >= 0 ? '+' : '' }}
+                      {{ characterResponse.combat.initiative }}
+                    </p>
+                    <p><strong>Speed:</strong> {{ characterResponse.combat.speed }}</p>
+                    <p><strong>Hit Points:</strong> {{ characterResponse.combat.hp_max }}</p>
+                    <p class="mb-0">
+                      <strong>Temporary HP:</strong> {{ characterResponse.combat.temp_hp }}
+                    </p>
                   </div>
                 </div>
               </div>
 
+              <!-- RIGHT COLUMN -->
               <div class="col-md-6">
                 <div class="card mb-3">
                   <div class="card-header bg-info text-white">
@@ -401,12 +305,22 @@
                   </div>
                   <div class="card-body">
                     <div class="row text-center">
-                      <div class="col-4 mb-3" *ngFor="let ability of getObjectKeys(character.attributes)">
+                      <div
+                        class="col-4 mb-3"
+                        *ngFor="let ability of getObjectKeys(characterResponse.attributes)"
+                      >
                         <div class="border rounded p-2">
-                          <div class="fw-bold">{{ability}}</div>
-                          <div class="h4 mb-0">{{character.attributes[ability]}}</div>
+                          <div class="fw-bold text-uppercase">{{ ability }}</div>
+
+                          <!-- Score -->
+                          <div class="h4 mb-0">
+                            {{ characterResponse.attributes[ability].score }}
+                          </div>
+
+                          <!-- Modifier -->
                           <small class="text-muted">
-                            ({{getAbilityModifier(character.attributes[ability]) >= 0 ? '+' : ''}}{{getAbilityModifier(character.attributes[ability])}})
+                            ({{ characterResponse.attributes[ability].modifier >= 0 ? '+' : '' }}
+                            {{ characterResponse.attributes[ability].modifier }})
                           </small>
                         </div>
                       </div>
@@ -414,56 +328,69 @@
                   </div>
                 </div>
 
+                <!-- Skills -->
                 <div class="card mb-3">
                   <div class="card-header bg-warning">
                     <h5 class="mb-0">Skills</h5>
                   </div>
                   <div class="card-body">
                     <div class="row">
-                      <!-- <div class="col-6" *ngFor="let skill of getSkillKeys()">
-                        <div class="form-check" *ngIf="character.skills[skill]">
-                          <input class="form-check-input" type="checkbox" checked disabled>
-                          <label class="form-check-label">
-                            {{skill}}
-                          </label>
+                      <div class="col-6 mb-2" *ngFor="let skill of characterResponse.skills">
+                        <div class="border rounded p-2">
+                          <strong>{{ skill.name }}</strong>
+                          <br />
+                          <span class="text-muted small">
+                            {{ skill.attribute.toUpperCase() }}
+                            ({{ skill.bonus >= 0 ? '+' : '' }}{{ skill.bonus }})
+                          </span>
                         </div>
-                      </div> -->
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
 
+            <!-- EQUIPMENT -->
             <div class="card mb-4">
               <div class="card-header bg-secondary text-white">
                 <h5 class="mb-0">Equipment</h5>
               </div>
               <div class="card-body">
                 <ul class="mb-0">
-                  <li *ngFor="let item of character.equipment">{{item}}</li>
+                  <li *ngFor="let item of characterResponse?.equipment">
+                    <strong>{{ item.name }}</strong> (x{{ item.amount }}) — {{ item.description }}
+                  </li>
                 </ul>
               </div>
             </div>
 
+            <!-- NOTES -->
             <div class="mb-4">
               <label for="notes" class="form-label">Character Notes (Optional)</label>
-              <textarea 
-                class="form-control" 
+              <!-- <textarea
+                class="form-control"
                 id="notes"
                 rows="4"
-                [(ngModel)]="character.notes"
-                placeholder="Add any additional notes about your character..."></textarea>
+                [(ngModel)]="characterResponse.notes"
+                placeholder="Add any additional notes about your character..."
+              ></textarea> -->
             </div>
 
+            <!-- ACTION BUTTONS -->
             <div class="d-grid gap-2">
               <button class="btn btn-success btn-lg" (click)="downloadCharacter()">
-                <i class="bi bi-download"></i> Download Character Sheet (JSON)
+                <i class="bi bi-download"></i>
+                Download Character Sheet (JSON)
               </button>
+
               <button class="btn btn-outline-primary btn-lg" disabled>
-                <i class="bi bi-printer"></i> Print Character Sheet (Coming Soon)
+                <i class="bi bi-printer"></i>
+                Print Character Sheet (Coming Soon)
               </button>
             </div>
           </div>
+
 
           <!-- Decisões Dinâmicas -->
           <div *ngIf="decisionsArray.length > 0" class="mt-4">
@@ -550,6 +477,7 @@
           </div>
           </div>
         </div>
+        </div>
 
         <!-- Navigation Footer -->
         <div class="card-footer bg-light">
@@ -580,7 +508,6 @@
             </span>
           </div>
         </div>
-      </div>
 
     </div>
   </div>

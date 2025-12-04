@@ -1,14 +1,13 @@
 import { Component, Input, DestroyRef, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Character } from '../../shared/components/sheets/character-sheet/character-sheet.component';
-import { SavingThrows } from '../../shared/components/sheets/character-sheet/character-sheet.component';
-import { Attributes } from '../../shared/components/sheets/character-sheet/character-sheet.component';
+import { Character, SavingThrows, Attributes } from '../../shared/models/character.model';
 import { Monster } from '../../shared/components/sheets/monster-sheet/monster-sheet.component';
 import { CharacterSheetComponent } from '../../shared/components/sheets/character-sheet/character-sheet.component';
 import { MonsterSheetComponent } from '../../shared/components/sheets/monster-sheet/monster-sheet.component';
 import { NotificationComponent } from '../../shared/components/notification/notification.component';
 import { FormsModule } from '@angular/forms';
 import { CharacterCreationService } from '../../shared/services/character-creation-service';
+import { CharacterSheetsService } from '../../shared/services/character-sheets-service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { BaseDataService } from '../../shared/services/base-data-service';
 import { HttpClient } from "@angular/common/http";
@@ -17,7 +16,8 @@ import { CriarFichaRequest } from '../../shared/models/criar-ficha-request.model
 import { Atributos } from '../../shared/models/atributos.model';
 import { Decision } from '../../shared/models/decision.model';
 import { ApiResponse } from '../../shared/models/api-response.model';
-import { ClassLevel } from '../../shared/components/sheets/character-sheet/character-sheet.component';
+import { ClassLevel } from '../../shared/models/character.model';
+import { CharacterResponse } from '../../shared/models/character-response.model';
 
 @Component({
   selector: 'app-character-creation',
@@ -30,6 +30,7 @@ export class CharacterCreationComponent {
   constructor(
     private route: ActivatedRoute,
     private characterCreationService: CharacterCreationService,
+    private characterSheetsService: CharacterSheetsService,
     private baseDataService: BaseDataService,
     private http: HttpClient
   ) {}
@@ -46,13 +47,15 @@ export class CharacterCreationComponent {
   currentDecisionIndex = 0;
 
   step: number = 1;
-  totalSteps: number = 8;
+  totalSteps: number = 6;
   pointBuyPoints: number = 27;
   selectedSubrace: string = '';
 
   showAddLevelButton: boolean = false;
 
   character: Character = this.initializeCharacter();
+
+  characterResponse: CharacterResponse | null = null;
 
   races: string[] = [];
 
@@ -85,16 +88,12 @@ export class CharacterCreationComponent {
 
   // Função para controlar o loading
   private setLoading(loading: boolean): void {
-    console.log('🔄 setLoading chamado:', loading);
     this.isLoadingDecision = loading;
-    console.log('📊 isLoadingDecision agora é:', this.isLoadingDecision);
     
     if (loading) {
       document.body.classList.add('loading-active');
-      console.log('✅ Classe loading-active ADICIONADA ao body');
     } else {
       document.body.classList.remove('loading-active');
-      console.log('❌ Classe loading-active REMOVIDA do body');
     }
   }
 
@@ -406,7 +405,22 @@ export class CharacterCreationComponent {
   }
 
   loadCharacterToView() {
+    this.setLoading(true);
 
+    this.characterSheetsService.getSheetbyId(this.character.id)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (response) => {
+          if (response) {
+            this.characterResponse = response;
+          }
+          this.setLoading(false);
+        },
+        error: (error) => {
+          console.error('Erro ao buscar personagem:', error);
+          this.setLoading(false);
+        }
+      });
   }
 
   // oldSetRace(race: any) {

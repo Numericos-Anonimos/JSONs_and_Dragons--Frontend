@@ -31,25 +31,6 @@ export class LoginComponent {
 
   loginWithGoogle() {
     window.location.href = 
-      "http://localhost:8000/auth/login";
+      "https://jsons-and-dragons.onrender.com/auth/login";
   }
-
-  // loginWithGoogle() {
-  //   // Mock login
-  //   try {
-  //     // Pretend JWT returned from backend
-  //     const fakeToken =
-  // 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.' + // header
-  // 'eyJzdWIiOiJmYWtlVXNlckBleGFtcGxlLmNvbSIsIm5hbWUiOiJEZXYgVXNlciJ9.' + // payload
-  // 'signature'; // dummy signature
-
-  //     // Save token using your AuthService
-  //     this.auth.saveToken(fakeToken);
-
-  //     // Navigate to the main app
-  //     this.router.navigate(['/home']);
-  //   } catch (err) {
-  //     this.errorMessage = 'Failed to log in (mock)';
-  //   }
-  // }
 }

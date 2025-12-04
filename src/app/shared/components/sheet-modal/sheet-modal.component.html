@@ -1,0 +1,241 @@
+<div class="modal fade" [class.show]="showModal" [style.display]="showModal ? 'block' : 'none'" 
+     tabindex="-1" role="dialog" aria-labelledby="characterModalLabel" aria-hidden="true"
+     *ngIf="character">
+  <div class="modal-dialog modal-xl modal-dialog-scrollable" role="document">
+    <div class="modal-content character-modal">
+      
+      <!-- Header -->
+      <div class="modal-header character-modal-header">
+        <div>
+          <h2 class="modal-title character-title" id="characterModalLabel">
+            {{ character.header.name }}
+          </h2>
+          <p class="character-subtitle mb-0">
+            {{ character.header.race }} • {{ character.header.class_level }} • {{ character.header.background }}
+          </p>
+        </div>
+        <button type="button" class="btn-close btn-close-white" (click)="closeModal()" aria-label="Fechar"></button>
+      </div>
+      
+      <!-- Modal Body -->
+      <div class="modal-body">
+        
+        <!-- Navigation Tabs -->
+        <ul class="nav nav-tabs mb-4" role="tablist">
+          <li class="nav-item" role="presentation">
+            <button class="nav-link" [class.active]="activeTab === 'sheet'" 
+                    (click)="setActiveTab('sheet')" type="button">
+              <i class="bi bi-file-person-fill me-2"></i>Ficha
+            </button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button class="nav-link" [class.active]="activeTab === 'stats'" 
+                    (click)="setActiveTab('stats')" type="button">
+              <i class="bi bi-bar-chart-fill me-2"></i>Atributos
+            </button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button class="nav-link" [class.active]="activeTab === 'combat'" 
+                    (click)="setActiveTab('combat')" type="button">
+              <i class="bi bi-shield-fill-check me-2"></i>Combate
+            </button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button class="nav-link" [class.active]="activeTab === 'skills'" 
+                    (click)="setActiveTab('skills')" type="button">
+              <i class="bi bi-star-fill me-2"></i>Perícias
+            </button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button class="nav-link" [class.active]="activeTab === 'equipment'" 
+                    (click)="setActiveTab('equipment')" type="button">
+              <i class="bi bi-backpack-fill me-2"></i>Equipamento
+            </button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button class="nav-link" [class.active]="activeTab === 'features'" 
+                    (click)="setActiveTab('features')" type="button">
+              <i class="bi bi-lightning-fill me-2"></i>Características
+            </button>
+          </li>
+        </ul>
+
+        <!-- Tab Content -->
+        <div class="tab-content">
+
+          <!-- Sheet Tab -->
+          <div *ngIf="activeTab === 'sheet'" class="tab-pane fade show active">
+            <div class="row g-3">
+              <div class="page">
+                <app-character-sheet
+                  [character]="character"
+                  [isWide]="true"
+                ></app-character-sheet>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Atributos Tab -->
+          <div *ngIf="activeTab === 'stats'" class="tab-pane fade show active">
+            <div class="row g-3">
+              <div class="col-md-6 col-lg-4" *ngFor="let attr of character.attributes | keyvalue">
+                <div class="attribute-card">
+                  <div class="attribute-header">
+                    <h5 class="attribute-name">{{ getAttributeName(attr.key) }}</h5>
+                    <span class="attribute-abbr">{{ attr.key.toUpperCase() }}</span>
+                  </div>
+                  <div class="attribute-body">
+                    <div class="attribute-score">{{ attr.value.score }}</div>
+                    <div class="attribute-details">
+                      <div class="attribute-detail-item">
+                        <span class="detail-label">Modificador:</span>
+                        <span class="detail-value">{{ formatModifier(attr.value.modifier) }}</span>
+                      </div>
+                      <div class="attribute-detail-item">
+                        <span class="detail-label">Teste de Resistência:</span>
+                        <span class="detail-value">{{ formatModifier(attr.value.save) }}</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Combate Tab -->
+          <div *ngIf="activeTab === 'combat'" class="tab-pane fade show active">
+            
+            <!-- Combat Stats -->
+            <div class="row g-3 mb-4">
+              <div class="col-md-3 col-6">
+                <div class="combat-stat-card">
+                  <i class="bi bi-heart-fill stat-icon text-danger"></i>
+                  <div class="stat-label">Pontos de Vida</div>
+                  <div class="stat-value">{{ character.combat.hp_max }}</div>
+                </div>
+              </div>
+              <div class="col-md-3 col-6">
+                <div class="combat-stat-card">
+                  <i class="bi bi-shield-fill stat-icon text-primary"></i>
+                  <div class="stat-label">Classe de Armadura</div>
+                  <div class="stat-value">{{ character.combat.ac }}</div>
+                </div>
+              </div>
+              <div class="col-md-3 col-6">
+                <div class="combat-stat-card">
+                  <i class="bi bi-lightning-charge-fill stat-icon text-warning"></i>
+                  <div class="stat-label">Iniciativa</div>
+                  <div class="stat-value">{{ formatModifier(character.combat.initiative) }}</div>
+                </div>
+              </div>
+              <div class="col-md-3 col-6">
+                <div class="combat-stat-card">
+                  <i class="bi bi-speedometer stat-icon text-success"></i>
+                  <div class="stat-label">Deslocamento</div>
+                  <div class="stat-value">{{ character.combat.speed }}m</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Attacks -->
+            <h4 class="section-title mb-3">
+              <i class="bi bi-crosshair me-2"></i>Ataques
+            </h4>
+            <div class="row g-3">
+              <div class="col-lg-6" *ngFor="let attack of character.attacks">
+                <div class="attack-card">
+                  <h5 class="attack-name">{{ attack.name }}</h5>
+                  <div class="attack-details">
+                    <div class="attack-detail">
+                      <span class="detail-label">Bônus de Ataque:</span>
+                      <span class="detail-value text-primary fw-bold">{{ formatModifier(attack.bonus || 0) }}</span>
+                    </div>
+                    <div class="attack-detail">
+                      <span class="detail-label">Dano:</span>
+                      <span class="detail-value">{{ attack.damage }}</span>
+                    </div>
+                    <div class="attack-detail">
+                      <span class="detail-label">Alcance:</span>
+                      <span class="detail-value">{{ attack.range }}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Perícias Tab -->
+          <div *ngIf="activeTab === 'skills'" class="tab-pane fade show active">
+            <div class="skills-list">
+              <div class="skill-item" *ngFor="let skill of character.skills"
+                   [class.skill-proficient]="isProficient(skill)"
+                   [class.skill-expertise]="isExpertise(skill)">
+                <div class="skill-name">
+                  <i class="bi bi-circle-fill" *ngIf="isProficient(skill) && !isExpertise(skill)"></i>
+                  <i class="bi bi-record-circle-fill" *ngIf="isExpertise(skill)"></i>
+                  <i class="bi bi-circle" *ngIf="!isProficient(skill)"></i>
+                  {{ skill.name }}
+                  <span class="skill-attribute">({{ skill.attribute }})</span>
+                </div>
+                <div class="skill-bonus">{{ formatModifier(skill.bonus) }}</div>
+              </div>
+            </div>
+            <div class="skills-legend mt-3">
+              <div class="legend-item">
+                <i class="bi bi-circle"></i> Não proficiente
+              </div>
+              <div class="legend-item">
+                <i class="bi bi-circle-fill"></i> Proficiente
+              </div>
+              <div class="legend-item">
+                <i class="bi bi-record-circle-fill"></i> Especialista
+              </div>
+            </div>
+          </div>
+
+          <!-- Equipamento Tab -->
+          <div *ngIf="activeTab === 'equipment'" class="tab-pane fade show active">
+            <div class="equipment-list">
+              <div class="equipment-item" *ngFor="let item of character.equipment">
+                <div class="equipment-header">
+                  <h5 class="equipment-name">
+                    {{ item.name }}
+                    <span class="equipment-amount" *ngIf="item.amount > 1">x{{ item.amount }}</span>
+                  </h5>
+                </div>
+                <p class="equipment-description" *ngIf="item.description">{{ item.description }}</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Características Tab -->
+          <div *ngIf="activeTab === 'features'" class="tab-pane fade show active">
+            <div class="features-list">
+              <div class="feature-card" *ngFor="let feature of character.features">
+                <div class="feature-header">
+                  <h5 class="feature-name">{{ feature.name }}</h5>
+                  <span class="feature-counter" *ngIf="feature.counter > 0">
+                    <i class="bi bi-lightning-charge-fill me-1"></i>{{ feature.counter }} uso(s)
+                  </span>
+                </div>
+                <p class="feature-description">{{ feature.description }}</p>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+      
+      <!-- Modal Footer -->
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="closeModal()">
+          <i class="bi bi-x-circle me-2"></i>Fechar
+        </button>
+      </div>
+      
+    </div>
+  </div>
+</div>
+
+<!-- Modal Backdrop -->
+<div class="modal-backdrop fade" [class.show]="showModal" *ngIf="showModal" (click)="closeModal()"></div>

@@ -1,0 +1,418 @@
+// Modal Customization
+.character-modal {
+  border: none;
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.character-modal-header {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 1.5rem;
+  border: none;
+}
+
+.character-title {
+  font-size: 1.75rem;
+  font-weight: 700;
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.character-subtitle {
+  font-size: 0.95rem;
+  opacity: 0.9;
+  margin-top: 0.25rem;
+}
+
+// Tabs
+.nav-tabs {
+  border-bottom: 2px solid #e9ecef;
+  
+  .nav-link {
+    border: none;
+    color: #6c757d;
+    font-weight: 500;
+    padding: 0.75rem 1.25rem;
+    transition: all 0.3s ease;
+    
+    i {
+      opacity: 0.7;
+    }
+    
+    &:hover {
+      color: #667eea;
+      border-color: transparent;
+    }
+    
+    &.active {
+      color: #667eea;
+      border-bottom: 3px solid #667eea;
+      background: transparent;
+      
+      i {
+        opacity: 1;
+      }
+    }
+  }
+}
+
+// Attribute Cards
+.attribute-card {
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  border-radius: 12px;
+  padding: 1.25rem;
+  height: 100%;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+  }
+}
+
+.attribute-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 2px solid rgba(255, 255, 255, 0.5);
+}
+
+.attribute-name {
+  font-size: 1rem;
+  font-weight: 600;
+  margin: 0;
+  color: #2d3748;
+}
+
+.attribute-abbr {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #667eea;
+  background: white;
+  padding: 0.25rem 0.5rem;
+  border-radius: 6px;
+}
+
+.attribute-body {
+  text-align: center;
+}
+
+.attribute-score {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #2d3748;
+  margin-bottom: 0.75rem;
+}
+
+.attribute-details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.attribute-detail-item {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.875rem;
+  padding: 0.25rem 0;
+}
+
+.detail-label {
+  color: #4a5568;
+  font-weight: 500;
+}
+
+.detail-value {
+  color: #2d3748;
+  font-weight: 700;
+}
+
+// Combat Stats
+.combat-stat-card {
+  background: white;
+  border: 2px solid #e9ecef;
+  border-radius: 12px;
+  padding: 1.25rem;
+  text-align: center;
+  transition: all 0.3s ease;
+  
+  &:hover {
+    border-color: #667eea;
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.1);
+  }
+}
+
+.stat-icon {
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+}
+
+.stat-label {
+  font-size: 0.875rem;
+  color: #6c757d;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+}
+
+.stat-value {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #2d3748;
+}
+
+// Section Title
+.section-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #2d3748;
+  border-bottom: 2px solid #e9ecef;
+  padding-bottom: 0.5rem;
+}
+
+// Attack Cards
+.attack-card {
+  background: white;
+  border: 2px solid #e9ecef;
+  border-radius: 12px;
+  padding: 1.25rem;
+  transition: all 0.3s ease;
+  
+  &:hover {
+    border-color: #667eea;
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.1);
+  }
+}
+
+.attack-name {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #2d3748;
+  margin-bottom: 1rem;
+}
+
+.attack-details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.attack-detail {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.5rem;
+  background: #f8f9fa;
+  border-radius: 6px;
+}
+
+// Skills
+.skills-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.skill-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  background: white;
+  border: 2px solid #e9ecef;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+  
+  &:hover {
+    border-color: #667eea;
+    box-shadow: 0 2px 8px rgba(102, 126, 234, 0.1);
+  }
+  
+  &.skill-proficient {
+    background: #f0f4ff;
+    border-color: #667eea;
+  }
+  
+  &.skill-expertise {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-color: #667eea;
+    
+    .skill-name, .skill-bonus {
+      color: white;
+    }
+    
+    .skill-attribute {
+      color: rgba(255, 255, 255, 0.8);
+    }
+  }
+}
+
+.skill-name {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 600;
+  color: #2d3748;
+  
+  i {
+    font-size: 0.75rem;
+  }
+}
+
+.skill-attribute {
+  font-size: 0.875rem;
+  color: #6c757d;
+  font-weight: 400;
+  margin-left: 0.25rem;
+}
+
+.skill-bonus {
+  font-weight: 700;
+  color: #667eea;
+  font-size: 1.1rem;
+}
+
+.skills-legend {
+  display: flex;
+  gap: 1.5rem;
+  padding: 1rem;
+  background: #f8f9fa;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  color: #6c757d;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  
+  i {
+    font-size: 0.75rem;
+  }
+}
+
+// Equipment
+.equipment-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.equipment-item {
+  background: white;
+  border: 2px solid #e9ecef;
+  border-radius: 12px;
+  padding: 1.25rem;
+  transition: all 0.2s ease;
+  
+  &:hover {
+    border-color: #667eea;
+    box-shadow: 0 2px 8px rgba(102, 126, 234, 0.1);
+  }
+}
+
+.equipment-header {
+  margin-bottom: 0.5rem;
+}
+
+.equipment-name {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #2d3748;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.equipment-amount {
+  font-size: 0.875rem;
+  color: white;
+  background: #667eea;
+  padding: 0.125rem 0.5rem;
+  border-radius: 12px;
+}
+
+.equipment-description {
+  margin: 0;
+  font-size: 0.875rem;
+  color: #6c757d;
+  line-height: 1.5;
+}
+
+// Features
+.features-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.feature-card {
+  background: white;
+  border: 2px solid #e9ecef;
+  border-radius: 12px;
+  padding: 1.25rem;
+  transition: all 0.2s ease;
+  
+  &:hover {
+    border-color: #667eea;
+    box-shadow: 0 2px 8px rgba(102, 126, 234, 0.1);
+  }
+}
+
+.feature-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.75rem;
+}
+
+.feature-name {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #2d3748;
+  margin: 0;
+}
+
+.feature-counter {
+  display: flex;
+  align-items: center;
+  font-size: 0.875rem;
+  color: white;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 0.375rem 0.75rem;
+  border-radius: 20px;
+  font-weight: 600;
+}
+
+.feature-description {
+  margin: 0;
+  font-size: 0.875rem;
+  color: #6c757d;
+  line-height: 1.6;
+}
+
+// Modal Footer
+.modal-footer {
+  border-top: 2px solid #e9ecef;
+  padding: 1rem 1.5rem;
+}
+
+// Responsive
+@media (max-width: 768px) {
+  .character-title {
+    font-size: 1.5rem;
+  }
+  
+  .nav-tabs .nav-link {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.875rem;
+    
+    i {
+      display: none;
+    }
+  }
+}

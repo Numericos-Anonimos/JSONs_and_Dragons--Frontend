@@ -4,7 +4,7 @@ import { CommonModule } from '@angular/common';
 import { CharacterSheetComponent } from './shared/components/sheets/character-sheet/character-sheet.component';
 import { MonsterSheetComponent } from './shared/components/sheets/monster-sheet/monster-sheet.component';
 import { Monster } from './shared/components/sheets/monster-sheet/monster-sheet.component';
-import { Character } from './shared/components/sheets/character-sheet/character-sheet.component';
+import { Character } from './shared/models/character.model';
 import { NotificationComponent } from "./shared/components/notification/notification.component";
 import { Router } from '@angular/router';
 import { NavigationEnd } from '@angular/router';

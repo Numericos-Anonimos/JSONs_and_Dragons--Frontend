@@ -18,10 +18,11 @@ import { Decision } from '../../shared/models/decision.model';
 import { ApiResponse } from '../../shared/models/api-response.model';
 import { ClassLevel } from '../../shared/models/character.model';
 import { CharacterResponse } from '../../shared/models/character-response.model';
+import { LoadingOverlayComponent } from '../../shared/components/loading-overlay/loading-overlay.component';
 
 @Component({
   selector: 'app-character-creation',
-  imports: [CommonModule, CharacterSheetComponent, FormsModule],
+  imports: [CommonModule, CharacterSheetComponent, LoadingOverlayComponent, FormsModule],
   templateUrl: './character-creation.component.html',
   styleUrl: './character-creation.component.less'
 })
@@ -413,6 +414,7 @@ export class CharacterCreationComponent {
         next: (response) => {
           if (response) {
             this.characterResponse = response;
+            this.characterResponse.skills = this.characterResponse.skills.filter(f => f.bonus > 0)
           }
           this.setLoading(false);
         },
@@ -529,7 +531,7 @@ export class CharacterCreationComponent {
     }
     else throw Error('Error while updating class level (level 1)');
 
-    this.setLoading(true);
+    setTimeout(() => this.setLoading(true));
 
     this.characterCreationService.sendClass(this.character.id, classe, 1)
       .pipe(takeUntilDestroyed(this.destroyRef))

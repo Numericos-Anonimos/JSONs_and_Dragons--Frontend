@@ -1,18 +1,7 @@
 <div class="container py-5">
-  <div class="loading-overlay-advanced" *ngIf="isLoadingDecision">
-    <div class="loading-content-advanced">
-      <div class="dice-animation mb-4">
-        <i class="bi bi-dice-6-fill"></i>
-      </div>
-      <h4 class="text-light fw-bold mb-2">Carregando...</h4>
-      <p class="text-light opacity-75">Processando sua escolha</p>
-      <div class="loading-dots">
-        <span></span>
-        <span></span>
-        <span></span>
-      </div>
-    </div>
-  </div>
+  <app-loading-overlay
+  [isLoading]="isLoadingDecision">
+  </app-loading-overlay>
 
   <div class="row justify-content-center">
     <div class="col-lg-10">
@@ -267,32 +256,29 @@
               <div class="col-md-6">
                 <div class="card mb-3">
                   <div class="card-header bg-primary text-white">
-                    <h5 class="mb-0">Basic Information</h5>
+                    <h5 class="mb-0">Informações</h5>
                   </div>
                   <div class="card-body">
-                    <p><strong>Name:</strong> {{ characterResponse.header.name }}</p>
-                    <p><strong>Race:</strong> {{ characterResponse.header.race }}</p>
-                    <p><strong>Class:</strong> {{ characterResponse.header.class_level }}</p>
-                    <p><strong>Background:</strong> {{ characterResponse.header.background }}</p>
+                    <p><strong>Nome:</strong> {{ characterResponse.header.name }}</p>
+                    <p><strong>Raça:</strong> {{ characterResponse.header.race }}</p>
+                    <p><strong>Classe:</strong> {{ characterResponse.header.class_level }}</p>
+                    <p><strong>Antecedente:</strong> {{ characterResponse.header.background }}</p>
                   </div>
                 </div>
 
                 <div class="card mb-3">
                   <div class="card-header bg-success text-white">
-                    <h5 class="mb-0">Combat Stats</h5>
+                    <h5 class="mb-0">Estatísticas de combate</h5>
                   </div>
                   <div class="card-body">
-                    <p><strong>Armor Class:</strong> {{ characterResponse.combat.ac }}</p>
+                    <p><strong>CA:</strong> {{ characterResponse.combat.ac }}</p>
                     <p>
-                      <strong>Initiative:</strong>
+                      <strong>Iniciativa:</strong>
                       {{ characterResponse.combat.initiative >= 0 ? '+' : '' }}
                       {{ characterResponse.combat.initiative }}
                     </p>
-                    <p><strong>Speed:</strong> {{ characterResponse.combat.speed }}</p>
-                    <p><strong>Hit Points:</strong> {{ characterResponse.combat.hp_max }}</p>
-                    <p class="mb-0">
-                      <strong>Temporary HP:</strong> {{ characterResponse.combat.temp_hp }}
-                    </p>
+                    <p><strong>Velocidade:</strong> {{ characterResponse.combat.speed }}</p>
+                    <p><strong>Pontos de Vitalidade:</strong> {{ characterResponse.combat.hp_max }}</p>
                   </div>
                 </div>
               </div>
@@ -301,7 +287,7 @@
               <div class="col-md-6">
                 <div class="card mb-3">
                   <div class="card-header bg-info text-white">
-                    <h5 class="mb-0">Ability Scores</h5>
+                    <h5 class="mb-0">Atributos</h5>
                   </div>
                   <div class="card-body">
                     <div class="row text-center">
@@ -331,7 +317,7 @@
                 <!-- Skills -->
                 <div class="card mb-3">
                   <div class="card-header bg-warning">
-                    <h5 class="mb-0">Skills</h5>
+                    <h5 class="mb-0">Habilidades</h5>
                   </div>
                   <div class="card-body">
                     <div class="row">
@@ -354,40 +340,28 @@
             <!-- EQUIPMENT -->
             <div class="card mb-4">
               <div class="card-header bg-secondary text-white">
-                <h5 class="mb-0">Equipment</h5>
+                <h5 class="mb-0">Equipamento</h5>
               </div>
               <div class="card-body">
                 <ul class="mb-0">
                   <li *ngFor="let item of characterResponse?.equipment">
-                    <strong>{{ item.name }}</strong> (x{{ item.amount }}) — {{ item.description }}
+                    <strong>{{ item.name }}</strong> (x{{ item.amount }}): {{ item.description }}
                   </li>
                 </ul>
               </div>
-            </div>
-
-            <!-- NOTES -->
-            <div class="mb-4">
-              <label for="notes" class="form-label">Character Notes (Optional)</label>
-              <!-- <textarea
-                class="form-control"
-                id="notes"
-                rows="4"
-                [(ngModel)]="characterResponse.notes"
-                placeholder="Add any additional notes about your character..."
-              ></textarea> -->
             </div>
 
             <!-- ACTION BUTTONS -->
             <div class="d-grid gap-2">
               <button class="btn btn-success btn-lg" (click)="downloadCharacter()">
                 <i class="bi bi-download"></i>
-                Download Character Sheet (JSON)
+                Baixar ficha (JSON)
               </button>
 
-              <button class="btn btn-outline-primary btn-lg" disabled>
+              <!-- <button class="btn btn-outline-primary btn-lg" disabled>
                 <i class="bi bi-printer"></i>
                 Print Character Sheet (Coming Soon)
-              </button>
+              </button> -->
             </div>
           </div>
 

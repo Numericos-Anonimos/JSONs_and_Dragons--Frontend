@@ -66,11 +66,13 @@
           <!-- Sheet Tab -->
           <div *ngIf="activeTab === 'sheet'" class="tab-pane fade show active">
             <div class="row g-3">
-              <div class="page">
-                <app-character-sheet
-                  [character]="character"
-                  [isWide]="true"
-                ></app-character-sheet>
+              <div class="phb">
+                <div class="page">
+                    <app-character-sheet
+                    [character]="character"
+                    [isWide]="true">
+                    </app-character-sheet>
+                </div>
               </div>
             </div>
           </div>

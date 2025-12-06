@@ -4,6 +4,10 @@
 (closeModalEvent)="closeModal()"
 ></app-sheet-modal>
 
+<app-loading-overlay
+[isLoading]="isLoadingCharacter">
+</app-loading-overlay>
+
 <div class="character-list-container">
   <!-- Hero Header -->
   <section class="list-hero-section">

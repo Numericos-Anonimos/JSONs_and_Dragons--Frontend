@@ -9,6 +9,7 @@ import { CharacterSheetsService } from '../../shared/services/character-sheets-s
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { SimpleCharacterResponse } from '../../shared/models/simple-character-response.model';
 import { SheetModalComponent } from '../../shared/components/sheet-modal/sheet-modal.component';
+import { LoadingOverlayComponent } from '../../shared/components/loading-overlay/loading-overlay.component';
 
 // interface Character {
 //   id: number;
@@ -22,7 +23,7 @@ import { SheetModalComponent } from '../../shared/components/sheet-modal/sheet-m
 @Component({
   selector: 'app-manage-sheets',
   standalone: true,
-  imports: [CommonModule, FormsModule, CharacterSheetComponent, SheetModalComponent],
+  imports: [CommonModule, FormsModule, CharacterSheetComponent, LoadingOverlayComponent, SheetModalComponent],
   templateUrl: './manage-sheets.component.html',
   styleUrl: './manage-sheets.component.less'
 })
@@ -43,6 +44,7 @@ export class ManageSheetsComponent {
   smoothOffsetY = 15;
 
   isLoading: boolean = true;
+  isLoadingCharacter: boolean = false;
 
 
   constructor(
@@ -157,6 +159,7 @@ filterCharacters(): void {
 
 
   viewCharacter(id: string): void {
+    this.isLoadingCharacter = true;
     this.characterSheetsService.getSheetbyId(id)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
@@ -164,11 +167,12 @@ filterCharacters(): void {
           if (response) {
             this.selectedCharacter = response;
             this.showModal = true;
+            this.isLoadingCharacter = false;
           }
         },
         error: (error) => {
           console.error('Erro ao buscar personagem:', error);
-          this.isLoading = false;
+          this.isLoadingCharacter = false;
         }
       });
   }

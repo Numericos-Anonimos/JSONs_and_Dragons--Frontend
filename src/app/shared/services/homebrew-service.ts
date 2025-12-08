@@ -11,7 +11,7 @@ export class HomeBrewService {
 
   private buildHeaders(): HttpHeaders {
     const token = this.authService.getToken();
-    const headers: any = { 'Content-Type': 'application/json' };
+    const headers: any = {};
     
     if (token) {
       headers['Authorization'] = `Bearer ${token}`;

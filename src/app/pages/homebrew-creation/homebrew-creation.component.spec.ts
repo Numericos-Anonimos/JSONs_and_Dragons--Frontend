@@ -1,23 +1,23 @@
-// import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-// import { CharacterSheetComponent } from './character-sheet.component';
+import { HomebrewCreationComponent } from './homebrew-creation.component';
 
-// describe('CharacterSheetComponent', () => {
-//   let component: CharacterSheetComponent;
-//   let fixture: ComponentFixture<CharacterSheetComponent>;
+describe('HomebrewCreationComponent', () => {
+  let component: HomebrewCreationComponent;
+  let fixture: ComponentFixture<HomebrewCreationComponent>;
 
-//   beforeEach(async () => {
-//     await TestBed.configureTestingModule({
-//       imports: [CharacterSheetComponent]
-//     })
-//     .compileComponents();
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [HomebrewCreationComponent]
+    })
+    .compileComponents();
 
-//     fixture = TestBed.createComponent(CharacterSheetComponent);
-//     component = fixture.componentInstance;
-//     fixture.detectChanges();
-//   });
+    fixture = TestBed.createComponent(HomebrewCreationComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
 
-//   it('should create', () => {
-//     expect(component).toBeTruthy();
-//   });
-// });
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
+});

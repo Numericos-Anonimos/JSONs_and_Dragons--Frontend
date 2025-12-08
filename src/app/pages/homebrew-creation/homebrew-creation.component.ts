@@ -10,10 +10,12 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { BaseDataService } from '../../shared/services/base-data-service';
 import { HttpClient } from "@angular/common/http";
 import { ActivatedRoute } from '@angular/router';
+import { HomeBrewService } from '../../shared/services/homebrew-service';
+import { LoadingOverlayComponent } from '../../shared/components/loading-overlay/loading-overlay.component';
 
 @Component({
   selector: 'app-homebrew-creation',
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, LoadingOverlayComponent],
   templateUrl: './homebrew-creation.component.html',
   styleUrl: './homebrew-creation.component.less'
 })
@@ -21,7 +23,7 @@ export class HomebrewCreationComponent {
 
   constructor(
     private route: ActivatedRoute,
-    private characterCreationService: CharacterCreationService,
+    private homebrewService:HomeBrewService,
     private baseDataService: BaseDataService,
     private http: HttpClient
   ) {}
@@ -36,35 +38,47 @@ export class HomebrewCreationComponent {
   totalSteps: number = 8;
 
   homebrewName: string = "";
+  selectedFile: File | null = null;
+  uploading: boolean = false;
+  message: string = ''
 
   ngOnInit() {
-    // this.route.paramMap.subscribe(params => {
-    //   const id = params.get('id');
-
-    //   if (id) {
-    //     this.loadCharacterById(id);
-    //   }
-    // });
   }
 
-  nextStep(): void {
-    if (this.canProceed()) {
-      this.step++;
+  onFileSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files.length > 0) {
+      this.selectedFile = input.files[0];
+      
+      // Validação
+      if (!this.selectedFile.name.endsWith('.zip')) {
+        this.message = 'Por favor, selecione um arquivo ZIP';
+        this.selectedFile = null;
+      }
     }
   }
 
-  // Lógica de validação baseada no character-creation.component.ts
-  canProceed(): boolean {
-    return true;
-  }
-
-  onFilesSelected(event: Event) {
-  const input = event.target as HTMLInputElement;
-    if (input.files) {
-      const files = Array.from(input.files);
-      console.log(files);
-      // upload filessssss
+  uploadHomebrew(): void {
+    if (!this.selectedFile || !this.homebrewName) {
+      return;
     }
+
+    this.uploading = true;
+    this.message = '';
+
+    this.homebrewService.uploadHomebrew(this.homebrewName, this.selectedFile)
+    .subscribe({
+      next: (response) => {
+        this.message = response.message;
+        this.uploading = false;
+        this.homebrewName = '';
+        this.selectedFile = null;
+      },
+      error: (error) => {
+        this.message = `Erro: ${error.error?.detail || 'Erro ao fazer upload'}`;
+        this.uploading = false;
+      }
+    });
   }
 
 }

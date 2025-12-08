@@ -1,10 +1,7 @@
 import { Component, Input, DestroyRef, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Character, SavingThrows, Attributes } from '../../shared/models/character.model';
-import { Monster } from '../../shared/components/sheets/monster-sheet/monster-sheet.component';
 import { CharacterSheetComponent } from '../../shared/components/sheets/character-sheet/character-sheet.component';
-import { MonsterSheetComponent } from '../../shared/components/sheets/monster-sheet/monster-sheet.component';
-import { NotificationComponent } from '../../shared/components/notification/notification.component';
 import { FormsModule } from '@angular/forms';
 import { CharacterCreationService } from '../../shared/services/character-creation-service';
 import { CharacterSheetsService } from '../../shared/services/character-sheets-service';
@@ -67,35 +64,15 @@ export class CharacterCreationComponent {
 
   backgrounds: string[] = [];
 
-  alignments: string[] = [
-    'Lawful Good', 'Neutral Good', 'Chaotic Good',
-    'Lawful Neutral', 'True Neutral', 'Chaotic Neutral',
-    'Lawful Evil', 'Neutral Evil', 'Chaotic Evil'
-  ];
-
   ngOnInit() {
-    // this.route.paramMap.subscribe(params => {
-    //   const id = params.get('id');
-
-    //   if (id) {
-    //     this.loadCharacterById(id);
-    //   }
-    // });
   }
 
   ngOnDestroy(): void {
     document.body.classList.remove('loading-active');
   }
 
-  // Função para controlar o loading
   private setLoading(loading: boolean): void {
     this.isLoadingDecision = loading;
-    
-    if (loading) {
-      document.body.classList.add('loading-active');
-    } else {
-      document.body.classList.remove('loading-active');
-    }
   }
 
   initializeCharacter(): Character {
@@ -141,40 +118,6 @@ export class CharacterCreationComponent {
       notes: ''
     };
   }
-
-  // loadCharacterById(id: string) {
-  //   this.characterCreationService.getCharacter(id)
-  //     .pipe(takeUntilDestroyed(this.destroyRef))
-  //     .subscribe({
-  //       next: (character) => {
-  //         this.character = character;
-
-  //         // any derived fields you always recalc:
-  //         this.updateDerivedStats();
-
-  //         // now update feats
-  //         this.updateCharacterFeats();
-  //       },
-  //       error: (err) => {
-  //         console.error(`Failed to load character ${id}`, err);
-  //       }
-  //     });
-  // }
-
-  // updateCharacterFeats() {
-  //   if (!this.character.class || !this.character.subclass || !this.character.level) return;
-
-  //   this.characterCreationService.getFeatsForCharacter(
-  //     this.character.class,
-  //     this.character.subclass,
-  //     this.character.level
-  //   )
-  //   .pipe(takeUntilDestroyed(this.destroyRef))
-  //   .subscribe(feats => {
-  //     this.character.features = feats;
-  //   });
-  // }
-
 
   getRaces() {
     this.baseDataService.getRaces()
@@ -258,7 +201,7 @@ export class CharacterCreationComponent {
   decreaseAbility(ability: keyof Attributes): void {
     if (this.canDecreaseAbility(ability)) {
       this.character.attributes[ability]--;
-      this.updateDerivedStats();
+      // this.updateDerivedStats();
     }
   }
 
@@ -268,56 +211,7 @@ export class CharacterCreationComponent {
     
     // Update AC (base 10 + DEX modifier)
     this.character.armorClass = 10 + this.getAbilityModifier(this.character.attributes.DEX);
-    
-    // Update speed based on race
-    this.character.speed = this.getRaceSpeed();
-    
-    // Calculate hit points
-    // if (this.character.class) {
-    //   const classInfo = this.classes[this.character.class];
-    //   const hitDie = parseInt(classInfo.hitDice.substring(2));
-    //   const conMod = this.getAbilityModifier(this.character.attributes.CON);
-    //   this.character.hitPoints.max = hitDie + conMod;
-    //   this.character.hitPoints.current = this.character.hitPoints.max;
-    //   this.character.hitDice = classInfo.hitDice;
-    // }
   }
-
-  getRaceSpeed(): string {
-    const speedMap: { [key: string]: string } = {
-      'Dwarf': '25 ft',
-      'Elf': '30 ft',
-      'Halfling': '25 ft',
-      'Human': '30 ft',
-      'Dragonborn': '30 ft',
-      'Gnome': '25 ft',
-      'Half-Elf': '30 ft',
-      'Half-Orc': '30 ft',
-      'Tiefling': '30 ft'
-    };
-    return speedMap[this.character.race] || '30 ft';
-  }
-
-  // selectClass(className: any): void {
-  //   this.character.class = className;
-  //   const classInfo = this.classes[className];
-    
-  //   // Reset skills
-  //   Object.keys(this.character.skills).forEach(skill => {
-  //     this.character.skills = [];
-  //   });
-    
-  //   // Set saving throws
-  //   // Object.keys(this.character.savingThrows).forEach(ability => {
-  //   //   this.character.savingThrows[ability as keyof SavingThrows] = 
-  //   //     classInfo.savingThrows.includes(ability);
-  //   // });
-    
-  //   // Set equipment
-  //   // this.character.equipment = [...classInfo.equipment];
-    
-  //   this.updateDerivedStats();
-  // }
 
   nextStep(): void {
     if (this.canProceed()) {
@@ -406,7 +300,7 @@ export class CharacterCreationComponent {
   }
 
   loadCharacterToView() {
-    this.setLoading(true);
+    this.isLoadingDecision = true;
 
     this.characterSheetsService.getSheetbyId(this.character.id)
       .pipe(takeUntilDestroyed(this.destroyRef))
@@ -416,42 +310,20 @@ export class CharacterCreationComponent {
             this.characterResponse = response;
             this.characterResponse.skills = this.characterResponse.skills.filter(f => f.bonus > 0)
           }
-          this.setLoading(false);
+          this.isLoadingDecision = false;
         },
         error: (error) => {
           console.error('Erro ao buscar personagem:', error);
-          this.setLoading(false);
+          this.isLoadingDecision = false;
         }
       });
   }
-
-  // oldSetRace(race: any) {
-  //   this.character.race = race;
-  //   // this.selectedSubrace = ''; <--- Não precisamos mais limpar isso manualmente aqui
-
-  //   // Chama o endpoint do Python: POST /ficha/{id}/raca/{race}
-  //   // Nota: Precisamos do ID do personagem (salvo no passo anterior)
-  //   this.characterCreationService.sendRace(this.character.id, race)
-  //     .pipe(takeUntilDestroyed(this.destroyRef))
-  //     .subscribe(response => {
-
-  //     });
-  // }
-
-  // oldSetBackground(background: any) {
-  //   this.character.background = background;
-  //   this.characterCreationService.sendBackground(this.character.id, background)
-  //     .pipe(takeUntilDestroyed(this.destroyRef))
-  //     .subscribe(response => {
-
-  //     });
-  // }
 
   setRace(race: string): void {
     if (this.character.race !== '') return;
     
     this.character.race = race;
-    this.setLoading(true);
+    this.isLoadingDecision = true;
 
     this.characterCreationService.sendRace(this.character.id, race)
       .pipe(takeUntilDestroyed(this.destroyRef))
@@ -460,11 +332,11 @@ export class CharacterCreationComponent {
           if (response) {
             this.addDecision(response);
           }
-          this.setLoading(false);
+          this.isLoadingDecision = false;
         },
         error: (error) => {
           console.error('Erro ao adicionar raça:', error);
-          this.setLoading(false);
+          this.isLoadingDecision = false;
         }
       });
   }
@@ -473,7 +345,7 @@ export class CharacterCreationComponent {
     if (this.character.background !== '') return;
     
     this.character.background = bg;
-    this.setLoading(true);
+    this.isLoadingDecision = true;
 
     this.characterCreationService.sendBackground(this.character.id, bg)
       .pipe(takeUntilDestroyed(this.destroyRef))
@@ -482,11 +354,11 @@ export class CharacterCreationComponent {
           if (response) {
             this.addDecision(response);
           }
-          this.setLoading(false);
+          this.isLoadingDecision = false;
         },
         error: (error) => {
           console.error('Erro ao adicionar background:', error);
-          this.setLoading(false);
+          this.isLoadingDecision = false;
         }
       });
   }
@@ -506,7 +378,7 @@ export class CharacterCreationComponent {
 
     this.character.totalLevel++;
 
-    this.setLoading(true);
+    this.isLoadingDecision = true;
 
     this.characterCreationService.sendClass(this.character.id, classe, classLevel)
       .pipe(takeUntilDestroyed(this.destroyRef))
@@ -515,11 +387,11 @@ export class CharacterCreationComponent {
           if (response) {
             this.addDecision(response);
           }
-          this.setLoading(false);
+          this.isLoadingDecision = false;
         },
         error: (error) => {
           console.error('Erro ao adicionar classe:', error);
-          this.setLoading(false);
+          this.isLoadingDecision = false;
         }
       });
   }
@@ -531,7 +403,7 @@ export class CharacterCreationComponent {
     }
     else throw Error('Error while updating class level (level 1)');
 
-    setTimeout(() => this.setLoading(true));
+    setTimeout(() => this.isLoadingDecision = true);
 
     this.characterCreationService.sendClass(this.character.id, classe, 1)
       .pipe(takeUntilDestroyed(this.destroyRef))
@@ -540,11 +412,11 @@ export class CharacterCreationComponent {
           if (response) {
             this.addDecision(response);
           }
-          this.setLoading(false);
+          this.isLoadingDecision = false;
         },
         error: (error) => {
           console.error('Erro ao adicionar classe:', error);
-          this.setLoading(false);
+          this.isLoadingDecision = false;
         }
       });
   }
@@ -553,17 +425,6 @@ export class CharacterCreationComponent {
     this.clearDecisions();
     this.showAddLevelButton = false;
   }
-
-  onFilesSelected(event: Event) {
-  const input = event.target as HTMLInputElement;
-    if (input.files) {
-      const files = Array.from(input.files);
-      console.log(files);
-      // upload filessssss
-    }
-  }
-
-  //choices
 
   isLoading(choiceIndex: number): boolean {
     return this.loading[choiceIndex] || false;
@@ -582,20 +443,19 @@ export class CharacterCreationComponent {
       }
     }
 
-    this.setLoading(true);
+    this.isLoadingDecision = true;
     
     this.characterCreationService.createCharacter(ficha)
     .pipe(takeUntilDestroyed(this.destroyRef))
     .subscribe(response => {
       console.log('Ficha criada com sucesso:', response);
-      this.setLoading(false);
+      this.isLoadingDecision = false;
       
       this.character.id = response.id;
     });
   }
 
-
-  //DECISIONS SECTION
+  // Decisions
 
   addDecision(apiResponse: ApiResponse): void {
     if (apiResponse.required_decision && apiResponse.required_decision.label) {
@@ -610,13 +470,11 @@ export class CharacterCreationComponent {
     }
   }
 
-  // Verifica se uma opção está selecionada
   isDecisionOptionSelected(decisionIndex: number, option: string): boolean {
     if (!this.decisionsArray[decisionIndex]) return false;
     return this.decisionsArray[decisionIndex].selectedOptions.includes(option);
   }
 
-  // Seleciona/deseleciona uma opção
   toggleDecisionOption(decisionIndex: number, option: string): void {
     const decision = this.decisionsArray[decisionIndex];
     if (!decision) return;
@@ -632,14 +490,12 @@ export class CharacterCreationComponent {
       if (decision.selectedOptions.length < decision.n) {
         decision.selectedOptions.push(option);
         
-        // Marca como completa se atingiu o número necessário
         if (decision.selectedOptions.length === decision.n) {
           decision.isComplete = true;
-          // Faz a chamada automática para o backend
           this.submitDecisionAndLoadNext(decisionIndex);
         }
+
       } else if (decision.n === 1) {
-        // Se só pode escolher 1, substitui a seleção anterior
         decision.selectedOptions = [option];
         decision.isComplete = true;
         this.submitDecisionAndLoadNext(decisionIndex);
@@ -648,53 +504,50 @@ export class CharacterCreationComponent {
   }
 
   // Envia a decisão e carrega a próxima se necessário
-submitDecisionAndLoadNext(decisionIndex: number): void {
-  const decision = this.decisionsArray[decisionIndex];
-  if (!decision.isComplete) return;
+  submitDecisionAndLoadNext(decisionIndex: number): void {
+    const decision = this.decisionsArray[decisionIndex];
+    if (!decision.isComplete) return;
 
-  this.setLoading(true);
+    this.isLoadingDecision = true;
 
-  const payload = {
-    // character_id: this.character.id,
-    // decision: decision.label,
-    // selected_options: decision.selectedOptions.length == 1 ? decision.selectedOptions[0] : decision.selectedOptions
-    decision: decision.selectedOptions.length == 1 ? decision.selectedOptions[0] : decision.selectedOptions
-  };
+    const payload = {
+      decision: decision.selectedOptions.length == 1 ? decision.selectedOptions[0] : decision.selectedOptions
+    };
 
-  this.characterCreationService.getNextChoices(this.character.id, payload)
-    .pipe(takeUntilDestroyed(this.destroyRef))
-    .subscribe({
-      next: (response) => {
-        console.log(response);
+    this.characterCreationService.getNextChoices(this.character.id, payload)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (response) => {
+          console.log(response);
 
-        // Se houver uma nova decisão, adiciona ao array
-        if (response && response.required_decision && response.required_decision.label) {
-          this.addDecision(response);
-          this.currentDecisionIndex = this.decisionsArray.length - 1;
-        } else {
-          if (this.step === 5 && this.character.classes.length == 1 && this.character.classes[0].level == 0) {
-            this.loadClassLevelOne(this.character.classes[0].class);
+          // Se houver uma nova decisão, adiciona ao array
+          if (response && response.required_decision && response.required_decision.label) {
+            this.addDecision(response);
+            this.currentDecisionIndex = this.decisionsArray.length - 1;
+          } else {
+            if (this.step === 5 && this.character.classes.length == 1 && this.character.classes[0].level == 0) {
+              this.loadClassLevelOne(this.character.classes[0].class);
+            }
+            if (this.step === 5) {
+              this.showAddLevelButton = true;
+            }
+            console.log('Todas as decisões foram completadas!');
           }
-          if (this.step === 5) {
-            this.showAddLevelButton = true;
-          }
-          console.log('Todas as decisões foram completadas!');
+          
+          this.isLoadingDecision = false;
+        },
+        error: (error) => {
+          console.error('Erro ao enviar decisão:', error);
+          alert('Erro ao processar sua escolha. Tente novamente.');
+          
+          // Reverte a decisão em caso de erro
+          decision.isComplete = false;
+          decision.selectedOptions = [];
+          
+          this.isLoadingDecision = false;
         }
-        
-        this.setLoading(false);
-      },
-      error: (error) => {
-        console.error('Erro ao enviar decisão:', error);
-        alert('Erro ao processar sua escolha. Tente novamente.');
-        
-        // Reverte a decisão em caso de erro
-        decision.isComplete = false;
-        decision.selectedOptions = [];
-        
-        this.setLoading(false);
-      }
-    });
-}
+      });
+  }
 
   // Verifica se a decisão está completa
   isDecisionComplete(decisionIndex: number): boolean {
@@ -726,13 +579,4 @@ submitDecisionAndLoadNext(decisionIndex: number): void {
     return existingClass ? existingClass.level + 1 : 1;
   }
   
-}
-
-
-interface ClassInfo {
-  skills: string[];
-  count: number;
-  hitDice: string;
-  savingThrows: string[];
-  equipment: string[];
 }

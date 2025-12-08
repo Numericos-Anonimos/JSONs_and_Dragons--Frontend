@@ -1,4 +1,10 @@
 <div class="container py-5">
+
+  <app-loading-overlay
+  [isLoading]="uploading"
+  [loadingText]="'Enviando homebrew'">
+  </app-loading-overlay>
+
   <div class="row justify-content-center">
     <div class="col-lg-10">
       
@@ -34,7 +40,7 @@
                 class="form-control"
                 type="file"
                 id="fileUpload"
-                (change)="onFilesSelected($event)"
+                (change)="onFileSelected($event)"
                 multiple
               />
             </div>
@@ -48,9 +54,8 @@
             <button 
               style="margin-left: auto"
               class="btn btn-primary"
-              (click)="nextStep()"
-              [disabled]="!canProceed()"
-              *ngIf="step < totalSteps">
+              (click)="uploadHomebrew()"
+              [disabled]="selectedFile == null">
               Enviar <i class="bi bi-check-lg"></i>
             </button>
 

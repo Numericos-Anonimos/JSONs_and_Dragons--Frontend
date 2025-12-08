@@ -12,6 +12,7 @@ import { Router } from '@angular/router';
 export class LoadingOverlayComponent {
     
   @Input('isLoading') isLoading: boolean = true;
+  @Input('loadingText') loadingText: string = "Por favor, aguarde";
 
   constructor(
     private router: Router

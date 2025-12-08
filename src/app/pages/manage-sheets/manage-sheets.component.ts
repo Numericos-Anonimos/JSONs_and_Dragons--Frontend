@@ -85,6 +85,12 @@ filterCharacters(): void {
         next: (response) => {
           if (response) {
             this.selectedCharacter = response;
+            
+            this.selectedCharacter.skills.sort((a, b) => {
+              const attrCompare = a.attribute.localeCompare(b.attribute);
+              return attrCompare !== 0 ? attrCompare : a.name.localeCompare(b.name);
+            });
+
             this.showModal = true;
             this.isLoadingCharacter = false;
           }

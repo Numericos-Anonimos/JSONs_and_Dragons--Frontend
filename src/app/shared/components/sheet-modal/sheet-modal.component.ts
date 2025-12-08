@@ -46,7 +46,7 @@ export class SheetModalComponent {
   }
 
   isProficient(skill: Skill): boolean {
-    return skill.roll === 'P' || skill.roll === 'E';
+    return skill.roll === 'D';
   }
 
   isExpertise(skill: Skill): boolean {

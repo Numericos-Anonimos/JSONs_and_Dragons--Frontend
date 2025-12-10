@@ -39,7 +39,14 @@ export class CharacterCreationComponent {
 
       if (characterFromLevelUp) {
         this.character.id = characterFromLevelUp.header.id;
-        this.character.classes = characterFromLevelUp.header.class_level;
+        const classesObj = characterFromLevelUp.header.class_level;
+
+        const classLevels: ClassLevel[] = Object.entries(classesObj).map(([key, value]) => ({
+          class: key as string,
+          level: Number(value)
+        }));
+
+        this.character.classes = classLevels;
         this.step = 5;
         this.isLevelingUp = true;
         this.getClasses();
@@ -159,8 +166,6 @@ export class CharacterCreationComponent {
 
   loadOptionsFromAPI(choiceIndex: number, query: string): void {
     this.loading[choiceIndex] = true;
-    
-    // Substitua pela sua URL da API
     this.http.get<string[]>(`api/${query}`).subscribe({
       next: (data) => {
         this.loadedOptions[choiceIndex] = data;
@@ -169,8 +174,8 @@ export class CharacterCreationComponent {
       error: (err) => {
         console.error(`Erro ao carregar opções para ${query}:`, err);
         // Mock para desenvolvimento
-        this.loadedOptions[choiceIndex] = ['Espada Longa', 'Machado de Batalha', 'Lança', 'Martelo de Guerra'];
-        this.loading[choiceIndex] = false;
+        // this.loadedOptions[choiceIndex] = ['Espada Longa', 'Machado de Batalha', 'Lança', 'Martelo de Guerra'];
+        // this.loading[choiceIndex] = false;
       }
     });
   }

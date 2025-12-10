@@ -31,6 +31,6 @@ export class LoginComponent {
 
   loginWithGoogle() {
     window.location.href = 
-      "http://localhost:8000/auth/login";
+      "https://jsons-and-dragons.onrender.com/auth/login";
   }
 }

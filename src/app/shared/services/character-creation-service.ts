@@ -51,7 +51,7 @@ export class CharacterCreationService {
   }
 
   uploadCharacter(zipFile: File): Observable<any> {
-    const url = `${this.baseUrl}/upload`;
+    const url = `${this.baseUrl}/ficha/import`;
     const formData = new FormData();
     formData.append('file', zipFile, zipFile.name);
     return this.http.post(url, formData, { headers: this.buildHeaders() });

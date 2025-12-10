@@ -350,7 +350,7 @@
               <div class="card-body">
                 <ul class="mb-0">
                   <li *ngFor="let item of characterResponse?.equipment">
-                    <strong>{{ item.name }}</strong> (x{{ item.amount }}): {{ item.description }}
+                    <strong>{{ item.name }}</strong> (x{{ item.amount }}){{ item.description ? ': ' + item.description : '' }}
                   </li>
                 </ul>
               </div>

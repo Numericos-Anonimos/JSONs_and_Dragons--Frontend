@@ -41,6 +41,7 @@ export class CharacterCreationComponent {
         this.character.id = characterFromLevelUp.header.id;
         this.step = 5;
         this.isLevelingUp = true;
+        this.getClasses();
       }
   }
 

@@ -16,6 +16,7 @@ import { ApiResponse } from '../../shared/models/api-response.model';
 import { ClassLevel } from '../../shared/models/character.model';
 import { CharacterResponse } from '../../shared/models/character-response.model';
 import { LoadingOverlayComponent } from '../../shared/components/loading-overlay/loading-overlay.component';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-character-creation',
@@ -30,8 +31,18 @@ export class CharacterCreationComponent {
     private characterCreationService: CharacterCreationService,
     private characterSheetsService: CharacterSheetsService,
     private baseDataService: BaseDataService,
-    private http: HttpClient
-  ) {}
+    private http: HttpClient,
+    private router: Router
+  ) {
+      const nav = this.router.getCurrentNavigation();
+      const characterFromLevelUp = nav?.extras.state?.['character'];
+
+      if (characterFromLevelUp) {
+        this.character.id = characterFromLevelUp.header.id;
+        this.step = 5;
+        this.isLevelingUp = true;
+      }
+  }
 
   private destroyRef = inject(DestroyRef);
 
@@ -50,6 +61,7 @@ export class CharacterCreationComponent {
   selectedSubrace: string = '';
 
   showAddLevelButton: boolean = false;
+  isLevelingUp: boolean = false;
 
   character: Character = this.initializeCharacter();
 
@@ -257,9 +269,9 @@ export class CharacterCreationComponent {
       case 3: return this.character.race.length > 0;
       case 4: return this.character.background != null && this.character.background.length > 0;
       // case 5: return this.getSelectedSkillsCount() === this.getSkillCount();
-      case 6: return this.character.background !== undefined && this.character.background.length > 0;
-      case 7: return this.character.alignment !== undefined && this.character.alignment.length > 0;
-      case 8: return true;
+      // case 6: return this.character.background !== undefined && this.character.background.length > 0;
+      // case 7: return this.character.alignment !== undefined && this.character.alignment.length > 0;
+      // case 8: return true;
       default: return true;
     }
   }

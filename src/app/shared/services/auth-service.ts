@@ -13,11 +13,6 @@ export class AuthService {
     const token = localStorage.getItem(this.tokenKey);
     if (!token) return false;
     return true;
-
-    // Optional: verify expiration if decode the JWT
-    // const payload = JSON.parse(atob(token.split('.')[1]));
-    // const exp = payload.exp;
-    // return Date.now() < exp * 1000;
   }
 
   saveToken(token: string) {

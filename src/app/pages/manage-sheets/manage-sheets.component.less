@@ -41,6 +41,48 @@
   box-shadow: 0 10px 30px rgba(229, 62, 62, 0.3);
 }
 
+.btn-outline-primary {
+  position: relative;
+  padding: 10px 20px;
+  background: #fff;
+  border-radius: 8px;
+  border: none;
+  font-weight: 600;
+  z-index: 1;
+
+  /* texto com gradiente */
+  background: linear-gradient(135deg, #e53e3e, #dd6b20);
+  -webkit-background-clip: text;
+          background-clip: text;
+  color: transparent;
+}
+
+
+/* Borda com gradiente */
+.btn-outline-primary::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  padding: 2px; /* espessura da borda */
+  border-radius: inherit; /* mantém o border-radius */
+  background: linear-gradient(135deg, #e53e3e, #dd6b20);
+
+  /* Truque para mostrar só a borda */
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+          mask-composite: exclude;
+
+  z-index: -1;
+}
+
+
+.btn-outline-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 30px rgba(229, 62, 62, 0.3);
+}
+
 .search-section {
   background: rgba(255, 255, 255, 0.03);
   backdrop-filter: blur(10px);
@@ -235,3 +277,16 @@
   will-change: top, left; // Otimiza a performance
   width: 700px;
 }
+
+// .modal-content {
+//   border-radius: 16px;
+//   padding: 4px;
+// }
+
+// .modal-header .btn-close {
+//   filter: invert(0.6);
+// }
+
+// input[type="file"] {
+//   cursor: pointer;
+// }

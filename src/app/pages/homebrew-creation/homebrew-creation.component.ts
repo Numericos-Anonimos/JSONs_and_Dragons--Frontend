@@ -40,7 +40,7 @@ export class HomebrewCreationComponent {
   homebrewName: string = "";
   selectedFile: File | null = null;
   uploading: boolean = false;
-  message: string = ''
+  message: string = '';
 
   ngOnInit() {
   }

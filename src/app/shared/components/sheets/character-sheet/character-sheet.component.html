@@ -56,7 +56,7 @@
   </p>
   <p>
     <strong>Pontos de Vida:</strong>
-    {{character.combat.hp_max}} (+{{character.combat.temp_hp}} temporários)
+    {{character.combat.hp_max}} {{character.combat.temp_hp ? ('(+' + character.combat.temp_hp + 'temporários)') : ''}}
   </p>
   <p>
     <strong>Bônus de Proficiência:</strong>
@@ -66,7 +66,7 @@
   <h3>Ataques</h3>
   <ul>
     <li *ngFor="let attack of character.attacks">
-      {{ attack.name }}
+      <b>{{ attack.name }}:</b> {{attack.damage}} | Bônus de Ataque: +{{attack.bonus}}
     </li>
     <li *ngIf="character.attacks.length === 0">Nenhum ataque listado</li>
   </ul>
@@ -74,7 +74,7 @@
   <h3>Equipamento</h3>
   <ul>
     <li *ngFor="let item of character.equipment">
-      {{item.amount}}x {{item.name}} - {{item.description}}
+      {{item.amount}}x {{item.name}} {{item.description ? ('- ' + item.description) : '' }}
     </li>
   </ul>
 

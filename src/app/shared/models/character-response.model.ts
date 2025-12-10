@@ -13,6 +13,7 @@ export interface Header {
   race: string;
   class_level: string;
   background: string;
+  id: string;
 }
 
 export interface Attributes {

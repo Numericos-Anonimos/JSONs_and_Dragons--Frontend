@@ -10,9 +10,11 @@
       <!-- Header -->
       <div class="text-center mb-5">
         <h1 class="display-4 fw-bold mb-3 text-gradient">
-          <i class="bi bi-dice-6"></i> Criar Personagem D&D
+          <i class="bi bi-dice-6 me-4"></i>{{isLevelingUp ? 'Subir de nível' : 'Criar Personagem D&D'}}
         </h1>
-        <p class="lead text-muted">Crie seu aventureiro seguindo o Livro do Jogador ou suas próprias regras</p>
+        <p class="lead text-muted">{{isLevelingUp ? 
+        'Suba o seu personagem de nível' :
+        'Crie seu aventureiro seguindo o Livro do Jogador ou suas próprias regras'}}</p>
       </div>
       
       <!-- Progress Bar -->

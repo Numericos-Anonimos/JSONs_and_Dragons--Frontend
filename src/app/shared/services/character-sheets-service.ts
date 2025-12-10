@@ -34,4 +34,9 @@ export class CharacterSheetsService {
     const url = `${this.baseUrl}/fichas/${id}`;
     return this.http.get<CharacterResponse>(url, { headers:this.buildHeaders() });
   }
+
+  exportSheet(id: string): Observable<any> {
+    const url = `${this.baseUrl}/fichas/${id}/export`;
+    return this.http.get<any>(url, { headers:this.buildHeaders() });
+  }
 }

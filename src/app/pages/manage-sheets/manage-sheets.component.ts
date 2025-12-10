@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { CharacterResponse } from '../../shared/models/character-response.model';
 import { CharacterSheetsService } from '../../shared/services/character-sheets-service';
+import { CharacterCreationService } from '../../shared/services/character-creation-service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { SimpleCharacterResponse } from '../../shared/models/simple-character-response.model';
 import { SheetModalComponent } from '../../shared/components/sheet-modal/sheet-modal.component';
@@ -39,7 +40,8 @@ export class ManageSheetsComponent {
   constructor(
     private router: Router,
     private cdr: ChangeDetectorRef,
-    private characterSheetsService: CharacterSheetsService
+    private characterSheetsService: CharacterSheetsService,
+    private characterCreationService: CharacterCreationService
   ) {}
 
   private destroyRef = inject(DestroyRef);
@@ -63,18 +65,45 @@ export class ManageSheetsComponent {
       });
   }
 
-filterCharacters(): void {
-  const term = this.searchTerm.toLowerCase();
+  uploadCharacter() {
+    const input: HTMLInputElement = document.getElementById("fileInput") as HTMLInputElement;
 
-  this.filteredCharacters = this.characters.filter(char =>
-    
-    // HEADER
-    char.name.toLowerCase().includes(term) ||
-    Object.values(char.race).some(a => a.toLowerCase().includes(term)) ||
-    char.class.keys.toLowerCase().includes(term) ||
-    char.background.toLowerCase().includes(term)
-  );
-}
+    if (!input?.files || input.files.length === 0) {
+      alert("Selecione um arquivo primeiro.");
+      return;
+    }
+
+    const file = input.files[0];
+
+    console.log("Nome:", file.name);
+    console.log("Tamanho:", file.size);
+    console.log("Tipo:", file.type);
+
+    this.isLoadingCharacter = true;
+    this.characterCreationService.uploadCharacter(file)
+    .subscribe({
+      next: (response) => {
+        this.isLoadingCharacter = false;
+      },
+      error: (error) => {
+        this.isLoadingCharacter = false;
+        alert(`Erro ao fazer upload: ${error}`);
+      }
+    });
+  }
+
+  filterCharacters(): void {
+    const term = this.searchTerm.toLowerCase();
+
+    this.filteredCharacters = this.characters.filter(char =>
+      
+      // HEADER
+      char.name.toLowerCase().includes(term) ||
+      Object.values(char.race).some(a => a.toLowerCase().includes(term)) ||
+      char.class.keys.toLowerCase().includes(term) ||
+      char.background.toLowerCase().includes(term)
+    );
+  }
 
 
   viewCharacter(id: string): void {

@@ -49,4 +49,11 @@ export class CharacterCreationService {
     const url = `${this.baseUrl}/ficha/${characterId}/next`;
     return this.http.post(url, payload, { headers: this.buildHeaders() });
   }
+
+  uploadCharacter(zipFile: File): Observable<any> {
+    const url = `${this.baseUrl}/upload`;
+    const formData = new FormData();
+    formData.append('file', zipFile, zipFile.name);
+    return this.http.post(url, formData, { headers: this.buildHeaders() });
+  }
 }

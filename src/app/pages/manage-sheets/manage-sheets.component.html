@@ -9,6 +9,38 @@
 [loadingText]="'Obtendo dados da ficha'">
 </app-loading-overlay>
 
+<!-- Upload modal -->
+<div class="modal fade" id="uploadModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content border-0 shadow-lg">
+      
+      <!-- Header -->
+      <div class="modal-header border-0">
+        <h5 class="modal-title fw-bold">Importar Personagem</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+
+      <!-- Body -->
+      <div class="modal-body">
+        <label class="form-label fw-semibold mb-2">Escolha um arquivo</label>
+
+        <input type="file" id="fileInput" class="form-control form-control-lg" />
+
+        <p class="text-muted mt-2" style="font-size: 0.85rem;">
+          Formatos suportados: JSON
+        </p>
+      </div>
+
+      <!-- Footer -->
+      <div class="modal-footer border-0">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-primary px-4" data-bs-dismiss="modal" (click)="uploadCharacter()">Upload</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
 <div class="character-list-container">
   <!-- Header -->
   <section class="list-hero-section">
@@ -22,7 +54,13 @@
             Gerencie e edite todos os seus personagens em um só lugar
           </p>
         </div>
-        <div class="col-lg-4 text-lg-end mt-4 mt-lg-0">
+        <div class="col-lg-4 text-lg-end mt-4 mt-lg-0 d-flex" style="column-gap:12px">
+          <button 
+            data-bs-toggle="modal" data-bs-target="#uploadModal"
+            class="btn btn-outline-primary btn-lg px-3">
+            <i class="bi bi-upload me-2"></i>
+            Importar
+          </button>
           <button 
             class="btn btn-primary btn-lg px-4"
             (click)="createNewCharacter()">
@@ -98,7 +136,7 @@
 
               <div class="character-info">
                 <span class="info-badge">
-                  <i class="bi bi-person-fill"></i>
+                  <i class="bi bi-person-fill me-1"></i>
                   {{ character.race }}
                 </span>
 

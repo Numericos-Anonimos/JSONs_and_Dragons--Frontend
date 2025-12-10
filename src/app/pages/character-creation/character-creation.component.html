@@ -264,8 +264,8 @@
                   <div class="card-body">
                     <p><strong>Nome:</strong> {{ characterResponse.header.name }}</p>
                     <p><strong>Raça:</strong> {{ characterResponse.header.race }}</p>
-                    <p><strong>Classes:</strong> <span *ngFor="let entry of character.classes | keyvalue; let last = last">
-                                                    {{ entry.key }} {{ entry.value }}<span *ngIf="!last"> / </span>
+                    <p><strong>Classes:</strong> <span *ngFor="let class of character.classes; let last = last">
+                                                    {{ class.class }} {{ class.level }}<span *ngIf="!last"> / </span>
                                                   </span></p>
                     <p><strong>Antecedente:</strong> {{ characterResponse.header.background }}</p>
                   </div>

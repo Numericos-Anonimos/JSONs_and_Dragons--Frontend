@@ -276,15 +276,24 @@ export class CharacterCreationComponent {
     }
   }
 
-  downloadCharacter(): void {
-    const dataStr = JSON.stringify(this.character, null, 2);
-    const dataBlob = new Blob([dataStr], { type: 'application/json' });
-    const url = URL.createObjectURL(dataBlob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = `${this.character.name.replace(/\s+/g, '_')}_character.json`;
-    link.click();
-    URL.revokeObjectURL(url);
+    downloadSheet() {
+    this.characterSheetsService.exportSheet(this.character.id)
+    .subscribe({
+      next: (response) => {
+        const json = JSON.stringify(response, null, 2);
+        const blob = new Blob([json], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'character.json';
+        a.click();
+
+        URL.revokeObjectURL(url);
+      },
+      error: (error) => {
+      }
+    });
   }
 
   resetCharacter(): void {

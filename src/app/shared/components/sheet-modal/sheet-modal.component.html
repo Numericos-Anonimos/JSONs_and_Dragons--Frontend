@@ -11,7 +11,9 @@
             {{ character.header.name }}
           </h2>
           <p class="character-subtitle mb-0">
-            {{ character.header.race }} • {{ character.header.class_level }} • {{ character.header.background }}
+            {{ character.header.race }} • <span *ngFor="let entry of character.header.class_level | keyvalue; let last = last">
+                                            {{ entry.key }} {{ entry.value }}<span *ngIf="!last"> / </span>
+                                          </span> • {{ character.header.background }}
           </p>
         </div>
         <button type="button" class="btn-close btn-close-white" (click)="closeModal()" aria-label="Fechar"></button>

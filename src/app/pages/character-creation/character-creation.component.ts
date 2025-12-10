@@ -35,10 +35,11 @@ export class CharacterCreationComponent {
     private router: Router
   ) {
       const nav = this.router.getCurrentNavigation();
-      const characterFromLevelUp = nav?.extras.state?.['character'];
+      const characterFromLevelUp: CharacterResponse = nav?.extras.state?.['character'];
 
       if (characterFromLevelUp) {
         this.character.id = characterFromLevelUp.header.id;
+        this.character.classes = characterFromLevelUp.header.class_level;
         this.step = 5;
         this.isLevelingUp = true;
         this.getClasses();

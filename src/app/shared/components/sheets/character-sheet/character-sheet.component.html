@@ -2,7 +2,9 @@
   <h2>
     {{ character.header.name }}
     - 
-    {{ character.header.class_level }}
+    <span *ngFor="let entry of character.header.class_level | keyvalue; let last = last">
+      {{ entry.key }} {{ entry.value }}<span *ngIf="!last"> / </span>
+    </span>
     {{ character.header.race }}
   </h2>
 

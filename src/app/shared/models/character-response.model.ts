@@ -11,7 +11,7 @@ export interface CharacterResponse {
 export interface Header {
   name: string;
   race: string;
-  class_level: string;
+  class_level: any;
   background: string;
   id: string;
 }

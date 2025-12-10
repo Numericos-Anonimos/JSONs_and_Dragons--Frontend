@@ -20,6 +20,17 @@ export class CharacterCreationService {
     return new HttpHeaders(headers);
   }
 
+  private buildUploadHeaders(): HttpHeaders {
+    const token = this.authService.getToken();
+
+    const headers: any = {};
+    if (token) {
+      headers['Authorization'] = `Bearer ${token}`;
+    }
+
+    return new HttpHeaders(headers);
+  }
+
   constructor(
     private http: HttpClient,
     private authService: AuthService
@@ -54,6 +65,6 @@ export class CharacterCreationService {
     const url = `${this.baseUrl}/ficha/import`;
     const formData = new FormData();
     formData.append('file', zipFile, zipFile.name);
-    return this.http.post(url, formData, { headers: this.buildHeaders() });
+    return this.http.post(url, formData, { headers: this.buildUploadHeaders() });
   }
 }
